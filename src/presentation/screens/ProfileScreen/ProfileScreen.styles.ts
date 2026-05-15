@@ -7,21 +7,22 @@ export function createStyles(theme: Theme) {
       gap: theme.spacing.sm,
       marginBottom: theme.spacing.xl,
     },
-    row: {
+    headerRow: {
       flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: theme.spacing.sm,
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: theme.spacing.xl,
     },
-    swatch: {
-      width: 40,
-      height: 40,
+    headerLeft: {
+      flex: 1,
+      gap: theme.spacing.xs,
+    },
+    iconButton: {
+      padding: theme.spacing.sm,
       borderRadius: theme.radii.pill,
-      borderWidth: 2,
+      borderWidth: 1,
       borderColor: theme.colors.border,
-    },
-    swatchActive: {
-      borderColor: theme.colors.textPrimary,
-      borderWidth: 3,
+      backgroundColor: theme.colors.surface,
     },
     statsCard: {
       gap: theme.spacing.xs,

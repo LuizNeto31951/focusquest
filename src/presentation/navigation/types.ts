@@ -11,10 +11,15 @@ export type FocusStackParamList = {
   FocusActive: { sessionId: string };
 };
 
+export type ProfileStackParamList = {
+  ProfileHome: undefined;
+  Settings: undefined;
+};
+
 export type RootTabParamList = {
   Home: undefined;
   Tasks: NavigatorScreenParams<TasksStackParamList>;
   Focus: NavigatorScreenParams<FocusStackParamList>;
   Achievements: undefined;
-  Profile: undefined;
+  Profile: NavigatorScreenParams<ProfileStackParamList>;
 };

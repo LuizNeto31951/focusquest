@@ -3,11 +3,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, ListChecks, Target, Trophy, User } from 'lucide-react-native';
 import { HomeScreen } from '@/presentation/screens/HomeScreen';
 import { AchievementsScreen } from '@/presentation/screens/AchievementsScreen';
-import { ProfileScreen } from '@/presentation/screens/ProfileScreen';
 import { Icon } from '@/presentation/components';
 import { useTheme } from '@/presentation/providers';
 import { TasksStack } from './TasksStack';
 import { FocusStack } from './FocusStack';
+import { ProfileStack } from './ProfileStack';
 import type { RootTabParamList } from './types';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -70,7 +70,7 @@ export function RootNavigator() {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileStack}
         options={{
           title: 'Perfil',
           tabBarIcon: ({ color, size }) => (

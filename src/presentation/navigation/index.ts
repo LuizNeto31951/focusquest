@@ -3,4 +3,5 @@ export type {
   RootTabParamList,
   TasksStackParamList,
   FocusStackParamList,
+  ProfileStackParamList,
 } from './types';
