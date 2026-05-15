@@ -38,6 +38,21 @@ export class SqliteTaskDailyCompletionRepository
     return rows.map(TaskDailyCompletionMapper.toDomain);
   }
 
+  async findByUserSince(
+    userId: UniqueId,
+    sinceDay: string,
+  ): Promise<TaskDailyCompletion[]> {
+    const rows = await this.client.getAll<TaskDailyCompletionRow>(
+      `SELECT c.* FROM task_daily_completions c
+       INNER JOIN tasks t ON t.id = c.task_id
+       WHERE t.user_id = ? AND c.day >= ?
+       ORDER BY c.day ASC`,
+      userId,
+      sinceDay,
+    );
+    return rows.map(TaskDailyCompletionMapper.toDomain);
+  }
+
   async save(completion: TaskDailyCompletion): Promise<void> {
     const r = TaskDailyCompletionMapper.toRow(completion);
     await this.client.run(

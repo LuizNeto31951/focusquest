@@ -9,6 +9,11 @@ export interface TaskDailyCompletionRepository {
 
   findByDay(userId: UniqueId, day: string): Promise<TaskDailyCompletion[]>;
 
+  findByUserSince(
+    userId: UniqueId,
+    sinceDay: string,
+  ): Promise<TaskDailyCompletion[]>;
+
   save(completion: TaskDailyCompletion): Promise<void>;
 
   deleteByTaskAndDay(taskId: UniqueId, day: string): Promise<void>;

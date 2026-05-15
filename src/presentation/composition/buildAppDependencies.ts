@@ -20,6 +20,7 @@ import {
   ListAchievementsUseCase,
   ListXPHistoryUseCase,
   GetWeeklyStatsUseCase,
+  GetActivityCalendarUseCase,
 } from '@/application';
 import {
   type SqliteClient,
@@ -135,6 +136,11 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
       taskRepository,
       dailyCompletionRepository,
       focusSessionRepository,
+      clock,
+    ),
+    getActivityCalendar: new GetActivityCalendarUseCase(
+      taskRepository,
+      dailyCompletionRepository,
       clock,
     ),
 

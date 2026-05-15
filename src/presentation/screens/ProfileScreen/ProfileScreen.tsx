@@ -11,6 +11,7 @@ import {
   XPBar,
   StreakIndicator,
   WeeklyChart,
+  ActivityCalendar,
   Icon,
   type WeeklyChartDataPoint,
 } from '@/presentation/components';
@@ -118,6 +119,24 @@ export function ProfileScreen() {
             </Typography>
           </View>
         </Card>
+      ) : null}
+
+      {vm.activityCalendar ? (
+        <View style={styles.section}>
+          <View style={styles.sectionTitleRow}>
+            <Typography variant="h3">Atividade recente</Typography>
+            <Typography variant="caption" color="secondary">
+              {vm.activityCalendar.totalActiveDays} dias ativos
+            </Typography>
+          </View>
+          <Card style={styles.chartCard}>
+            <ActivityCalendar
+              data={vm.activityCalendar.days}
+              todayKey={vm.activityCalendar.todayKey}
+              accentColor={theme.colors.accent}
+            />
+          </Card>
+        </View>
       ) : null}
 
       {vm.weeklyStats ? (

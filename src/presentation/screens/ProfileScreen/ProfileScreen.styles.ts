@@ -30,5 +30,10 @@ export function createStyles(theme: Theme) {
     chartCard: {
       marginBottom: theme.spacing.sm,
     },
+    sectionTitleRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+    },
   });
 }

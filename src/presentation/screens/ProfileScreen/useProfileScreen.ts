@@ -4,12 +4,14 @@ import {
   useUserStats,
   useSkipDay,
   useWeeklyStats,
+  useActivityCalendar,
 } from '@/presentation/hooks';
 
 export function useProfileScreen() {
   const { user } = useCurrentUser();
   const { stats } = useUserStats(user?.id);
   const { stats: weeklyStats } = useWeeklyStats(user?.id);
+  const { calendar: activityCalendar } = useActivityCalendar(user?.id);
   const skipDay = useSkipDay();
 
   const triggerSkipDay = useCallback(async () => {
@@ -21,6 +23,7 @@ export function useProfileScreen() {
     user,
     stats,
     weeklyStats,
+    activityCalendar,
     triggerSkipDay,
     skipDayLoading: skipDay.loading,
   };

@@ -15,3 +15,4 @@ export { useStartFocusSession } from './useStartFocusSession';
 export { useEndFocusSession } from './useEndFocusSession';
 export { useSkipDay } from './useSkipDay';
 export { useWeeklyStats } from './useWeeklyStats';
+export { useActivityCalendar } from './useActivityCalendar';
