@@ -1,17 +1,19 @@
+import 'react-native-gesture-handler';
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ThemeProvider } from '@/presentation/providers';
-import { HomeScreen } from '@/presentation/screens/HomeScreen';
+import { ThemeProvider, AppBootstrap } from '@/presentation/providers';
+import { RootNavigator } from '@/presentation/navigation';
 
-/**
- * Composition root do app.
- * Aqui ficam apenas os providers globais e a entrada da navegação.
- */
 export default function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <HomeScreen />
+        <AppBootstrap defaultUserName="Você">
+          <NavigationContainer>
+            <RootNavigator />
+          </NavigationContainer>
+        </AppBootstrap>
       </ThemeProvider>
     </SafeAreaProvider>
   );

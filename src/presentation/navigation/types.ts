@@ -1,0 +1,20 @@
+import type { NavigatorScreenParams } from '@react-navigation/native';
+
+export type TasksStackParamList = {
+  TasksList: undefined;
+  TaskDetail: { taskId: string };
+  TaskForm: { taskId?: string; parentTaskId?: string };
+};
+
+export type FocusStackParamList = {
+  FocusHome: undefined;
+  FocusActive: { sessionId: string };
+};
+
+export type RootTabParamList = {
+  Home: undefined;
+  Tasks: NavigatorScreenParams<TasksStackParamList>;
+  Focus: NavigatorScreenParams<FocusStackParamList>;
+  Achievements: undefined;
+  Profile: undefined;
+};

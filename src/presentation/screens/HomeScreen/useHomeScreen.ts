@@ -1,46 +1,21 @@
-import { useCallback } from 'react';
-import { useThemeMode, useThemePreferences } from '@/presentation/providers';
-import type { AccentPreset, FontScale, Density } from '@/presentation/theme';
+import { useCurrentUser, useUserStats, useTasks } from '@/presentation/hooks';
+import { ISODate } from '@/shared/types';
 
-/**
- * ViewModel da HomeScreen.
- *
- * Contém toda a lógica de estado e interação. A View (HomeScreen.tsx) consome
- * este hook e apenas renderiza o que ele expõe — sem nenhuma regra de negócio
- * dentro do JSX.
- */
 export function useHomeScreen() {
-  const { mode, toggleMode } = useThemeMode();
-  const { preferences, updatePreferences, resetPreferences } = useThemePreferences();
-
-  const setAccent = useCallback(
-    (accent: AccentPreset) => updatePreferences({ accent }),
-    [updatePreferences],
-  );
-
-  const setFontScale = useCallback(
-    (fontScale: FontScale) => updatePreferences({ fontScale }),
-    [updatePreferences],
-  );
-
-  const setDensity = useCallback(
-    (density: Density) => updatePreferences({ density }),
-    [updatePreferences],
-  );
-
-  const toggleReduceMotion = useCallback(
-    () => updatePreferences({ reduceMotion: !preferences.reduceMotion }),
-    [updatePreferences, preferences.reduceMotion],
-  );
+  const { user } = useCurrentUser();
+  const { stats } = useUserStats(user?.id);
+  const today = ISODate.now();
+  const { tasks, refetch } = useTasks({
+    userId: user?.id ?? ('' as never),
+    onlyPending: true,
+    dueOnDay: today,
+    onlyTopLevel: true,
+  });
 
   return {
-    mode,
-    preferences,
-    toggleMode,
-    setAccent,
-    setFontScale,
-    setDensity,
-    toggleReduceMotion,
-    resetPreferences,
+    user,
+    stats,
+    pendingTasksToday: user ? tasks : [],
+    refetchTasks: refetch,
   };
 }
