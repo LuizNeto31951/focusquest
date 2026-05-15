@@ -1,5 +1,9 @@
 import type { UniqueId, ISODate } from '@/shared/types';
-import { dayKeyFromISODate, type Task } from '@/domain/entities';
+import {
+  dayKeyFromISODate,
+  isTaskCompleted,
+  type Task,
+} from '@/domain/entities';
 import type {
   TaskDailyCompletionRepository,
   TaskRepository,
@@ -26,27 +30,24 @@ export class ListTodaysTasksUseCase {
   async execute(input: ListTodaysTasksInput): Promise<TaskForDay[]> {
     const dayKey = dayKeyFromISODate(input.day);
 
-    const dueToday = await this.taskRepository.findMany({
-      userId: input.userId,
-      onlyTopLevel: true,
-      dueOnDay: input.day,
-    });
-
     const allTopLevel = await this.taskRepository.findMany({
       userId: input.userId,
       onlyTopLevel: true,
     });
 
-    const recurringToday = allTopLevel.filter(
-      (t) =>
-        t.isRecurring &&
-        t.recurrenceRule !== undefined &&
-        RecurrenceMatcher.matches(t.recurrenceRule, t.createdAt, input.day),
-    );
-
-    const merged = new Map<string, Task>();
-    for (const t of dueToday) merged.set(t.id, t);
-    for (const t of recurringToday) merged.set(t.id, t);
+    const relevant = allTopLevel.filter((t) => {
+      if (t.isRecurring) {
+        return (
+          t.recurrenceRule !== undefined &&
+          RecurrenceMatcher.matches(t.recurrenceRule, t.createdAt, input.day)
+        );
+      }
+      if (isTaskCompleted(t)) {
+        return dayKeyFromISODate(t.completedAt!) === dayKey;
+      }
+      if (!t.dueDate) return true;
+      return dayKeyFromISODate(t.dueDate) <= dayKey;
+    });
 
     const dailyCompletions = await this.dailyCompletionRepository.findByDay(
       input.userId,
@@ -54,7 +55,7 @@ export class ListTodaysTasksUseCase {
     );
     const completedTaskIds = new Set(dailyCompletions.map((c) => c.taskId));
 
-    return Array.from(merged.values()).map((task) => ({
+    return relevant.map((task) => ({
       task,
       isRecurringInstance: task.isRecurring,
       isCompletedToday: task.isRecurring

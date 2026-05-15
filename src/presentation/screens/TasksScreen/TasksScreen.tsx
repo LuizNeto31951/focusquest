@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Pressable } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { View, Pressable, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Plus, ListTodo } from 'lucide-react-native';
@@ -35,6 +35,17 @@ export function TasksScreen() {
   const categoryById = useMemo(
     () => new Map(categories.map((c) => [c.id, c])),
     [categories],
+  );
+
+  const handleToggleComplete = useCallback(
+    async (taskId: import('@/shared/types').UniqueId) => {
+      try {
+        await toggleComplete(taskId);
+      } catch (err) {
+        Alert.alert('Não foi possível concluir', (err as Error).message);
+      }
+    },
+    [toggleComplete],
   );
 
   return (
@@ -88,7 +99,7 @@ export function TasksScreen() {
               onPress={() =>
                 navigation.navigate('TaskDetail', { taskId: entry.task.id })
               }
-              onToggleComplete={() => toggleComplete(entry.task.id)}
+              onToggleComplete={() => handleToggleComplete(entry.task.id)}
             />
           ))}
         </View>

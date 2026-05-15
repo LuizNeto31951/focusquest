@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import { ListChecks } from 'lucide-react-native';
 import {
   Screen,
@@ -82,8 +82,15 @@ export function HomeScreen() {
               isCompletedToday={entry.isCompletedToday}
               isRecurringInstance={entry.isRecurringInstance}
               onToggleComplete={async () => {
-                await completeTask.run({ taskId: entry.task.id });
-                refetchTasks();
+                try {
+                  await completeTask.run({ taskId: entry.task.id });
+                  refetchTasks();
+                } catch (err) {
+                  Alert.alert(
+                    'Não foi possível concluir',
+                    (err as Error).message,
+                  );
+                }
               }}
             />
           ))}

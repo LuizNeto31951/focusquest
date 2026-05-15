@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type {
   NativeStackNavigationProp,
@@ -45,8 +45,28 @@ export function TaskDetailScreen() {
   const completed = isTaskCompleted(task);
 
   async function handleDelete() {
-    await vm.remove();
-    navigation.goBack();
+    try {
+      await vm.remove();
+      navigation.goBack();
+    } catch (err) {
+      Alert.alert('Não foi possível excluir', (err as Error).message);
+    }
+  }
+
+  async function handleComplete() {
+    try {
+      await vm.complete();
+    } catch (err) {
+      Alert.alert('Não foi possível concluir', (err as Error).message);
+    }
+  }
+
+  async function handleCompleteSubtask(subId: import('@/shared/types').UniqueId) {
+    try {
+      await vm.completeSubtask(subId);
+    } catch (err) {
+      Alert.alert('Não foi possível concluir', (err as Error).message);
+    }
   }
 
   return (
@@ -74,7 +94,11 @@ export function TaskDetailScreen() {
             Prazo: {new Date(task.dueDate).toLocaleString('pt-BR')}
           </Typography>
         ) : null}
-        {completed ? (
+        {task.isRecurring ? (
+          <Typography variant="caption" color="accent">
+            Tarefa recorrente
+          </Typography>
+        ) : completed ? (
           <Typography variant="caption" color="success">
             Concluída em {new Date(task.completedAt!).toLocaleString('pt-BR')}
           </Typography>
@@ -89,7 +113,7 @@ export function TaskDetailScreen() {
               <TaskCard
                 key={sub.id}
                 task={sub}
-                onToggleComplete={() => vm.completeSubtask(sub.id)}
+                onToggleComplete={() => handleCompleteSubtask(sub.id)}
               />
             ))}
           </View>
@@ -97,12 +121,12 @@ export function TaskDetailScreen() {
       ) : null}
 
       <View style={styles.actions}>
-        {!completed ? (
+        {!completed || task.isRecurring ? (
           <Button
-            label="Marcar como concluída"
+            label={task.isRecurring ? 'Concluir hoje' : 'Marcar como concluída'}
             fullWidth
             loading={vm.busy}
-            onPress={vm.complete}
+            onPress={handleComplete}
           />
         ) : null}
         <Button
