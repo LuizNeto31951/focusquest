@@ -19,5 +19,12 @@ export function createStyles(theme: Theme) {
     subtasks: {
       gap: theme.spacing.sm,
     },
+    loadingContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: theme.spacing.md,
+      paddingVertical: theme.spacing.xxxl,
+    },
   });
 }

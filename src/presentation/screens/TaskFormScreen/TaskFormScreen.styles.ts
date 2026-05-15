@@ -19,5 +19,11 @@ export function createStyles(theme: Theme) {
     errorText: {
       marginTop: theme.spacing.sm,
     },
+    loadingContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: theme.spacing.md,
+    },
   });
 }

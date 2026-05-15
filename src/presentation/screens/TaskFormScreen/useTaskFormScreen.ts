@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { UniqueId, ISODate } from '@/shared/types';
 import {
   useCategories,
@@ -27,6 +27,14 @@ export interface TaskFormState {
   customIntervalDays: string;
 }
 
+export interface TaskFormErrors {
+  title?: string;
+  categoryId?: string;
+  estimatedMinutes?: string;
+  weeklyDays?: string;
+  customIntervalDays?: string;
+}
+
 const EMPTY: TaskFormState = {
   title: '',
   description: '',
@@ -39,19 +47,47 @@ const EMPTY: TaskFormState = {
   customIntervalDays: '2',
 };
 
+function validateForm(form: TaskFormState): TaskFormErrors {
+  const errors: TaskFormErrors = {};
+  if (!form.title.trim()) errors.title = 'Título obrigatório';
+  if (!form.categoryId) errors.categoryId = 'Selecione uma categoria';
+
+  const minutes = parseInt(form.estimatedMinutes, 10);
+  if (Number.isNaN(minutes) || minutes < 0) {
+    errors.estimatedMinutes = 'Use um número inteiro >= 0';
+  }
+
+  if (form.recurrenceMode === 'WEEKLY' && form.weeklyDays.length === 0) {
+    errors.weeklyDays = 'Selecione ao menos um dia da semana';
+  }
+
+  if (form.recurrenceMode === 'CUSTOM') {
+    const interval = parseInt(form.customIntervalDays, 10);
+    if (Number.isNaN(interval) || interval < 1) {
+      errors.customIntervalDays = 'Intervalo deve ser >= 1 dia';
+    }
+  }
+
+  return errors;
+}
+
 export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
   const taskUniqueId = taskId ? UniqueId.from(taskId) : undefined;
-  const parentTaskId = parentTaskIdParam ? UniqueId.from(parentTaskIdParam) : undefined;
+  const parentTaskId = parentTaskIdParam
+    ? UniqueId.from(parentTaskIdParam)
+    : undefined;
   const isEdit = Boolean(taskUniqueId);
   const isSubtask = Boolean(parentTaskId);
 
   const { user } = useCurrentUser();
-  const { categories } = useCategories();
-  const { data } = useTaskWithSubtasks(taskUniqueId);
+  const { categories, loading: loadingCategories } = useCategories();
+  const { data, loading: loadingTask } = useTaskWithSubtasks(taskUniqueId);
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
 
   const [form, setForm] = useState<TaskFormState>(EMPTY);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [submitError, setSubmitError] = useState<Error | null>(null);
 
   useEffect(() => {
     if (data?.task) {
@@ -105,61 +141,73 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
     });
   }, []);
 
+  const allErrors = useMemo(() => validateForm(form), [form]);
+  const errors: TaskFormErrors = submitAttempted ? allErrors : {};
+  const isValid = Object.keys(allErrors).length === 0;
+
   const submit = useCallback(async () => {
-    if (!user) throw new Error('User not loaded');
-    if (!form.categoryId) throw new Error('Selecione uma categoria');
-    const minutes = parseInt(form.estimatedMinutes, 10);
-    if (Number.isNaN(minutes) || minutes < 0) {
-      throw new Error('Duração inválida');
+    setSubmitAttempted(true);
+    setSubmitError(null);
+
+    const errs = validateForm(form);
+    if (Object.keys(errs).length > 0) {
+      const firstMessage = Object.values(errs)[0];
+      throw new Error(firstMessage ?? 'Formulário inválido');
     }
 
+    if (!user) throw new Error('Usuário não carregado');
+    if (!form.categoryId) throw new Error('Selecione uma categoria');
+
+    const minutes = parseInt(form.estimatedMinutes, 10);
     const dueDate = form.dueDate ? ISODate.from(form.dueDate) : undefined;
 
     let isRecurring = false;
-    let recurrenceRule: import('@/domain/value-objects').RecurrenceRule | undefined;
+    let recurrenceRule:
+      | import('@/domain/value-objects').RecurrenceRule
+      | undefined;
     if (!isSubtask && form.recurrenceMode !== 'NONE') {
       isRecurring = true;
       if (form.recurrenceMode === 'DAILY') {
         recurrenceRule = RecurrenceRule.daily();
       } else if (form.recurrenceMode === 'WEEKLY') {
-        if (form.weeklyDays.length === 0) {
-          throw new Error('Selecione ao menos um dia da semana');
-        }
         recurrenceRule = RecurrenceRule.weekly(form.weeklyDays);
       } else if (form.recurrenceMode === 'CUSTOM') {
-        const interval = parseInt(form.customIntervalDays, 10);
-        if (Number.isNaN(interval) || interval < 1) {
-          throw new Error('Intervalo inválido');
-        }
-        recurrenceRule = RecurrenceRule.custom(interval);
+        recurrenceRule = RecurrenceRule.custom(
+          parseInt(form.customIntervalDays, 10),
+        );
       }
     }
 
-    if (isEdit && taskUniqueId) {
-      await updateTask.run({
-        id: taskUniqueId,
-        categoryId: form.categoryId,
-        title: form.title,
-        description: form.description.trim() ? form.description : null,
-        priority: form.priority,
-        estimatedMinutes: minutes,
-        dueDate: dueDate ?? null,
-        isRecurring,
-        recurrenceRule: recurrenceRule ?? null,
-      });
-    } else {
-      await createTask.run({
-        userId: user.id,
-        categoryId: form.categoryId,
-        parentTaskId,
-        title: form.title,
-        description: form.description.trim() || undefined,
-        priority: form.priority,
-        estimatedMinutes: minutes,
-        dueDate,
-        isRecurring,
-        recurrenceRule,
-      });
+    try {
+      if (isEdit && taskUniqueId) {
+        await updateTask.run({
+          id: taskUniqueId,
+          categoryId: form.categoryId,
+          title: form.title,
+          description: form.description.trim() ? form.description : null,
+          priority: form.priority,
+          estimatedMinutes: minutes,
+          dueDate: dueDate ?? null,
+          isRecurring,
+          recurrenceRule: recurrenceRule ?? null,
+        });
+      } else {
+        await createTask.run({
+          userId: user.id,
+          categoryId: form.categoryId,
+          parentTaskId,
+          title: form.title,
+          description: form.description.trim() || undefined,
+          priority: form.priority,
+          estimatedMinutes: minutes,
+          dueDate,
+          isRecurring,
+          recurrenceRule,
+        });
+      }
+    } catch (err) {
+      setSubmitError(err as Error);
+      throw err;
     }
   }, [
     user,
@@ -180,7 +228,12 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
     toggleWeekday,
     categories,
     submit,
-    loading: createTask.loading || updateTask.loading,
-    error: createTask.error ?? updateTask.error,
+    errors,
+    isValid,
+    submitAttempted,
+    loadingTaskData: loadingTask && isEdit,
+    loadingCategories,
+    submitting: createTask.loading || updateTask.loading,
+    submitError: submitError ?? createTask.error ?? updateTask.error,
   };
 }

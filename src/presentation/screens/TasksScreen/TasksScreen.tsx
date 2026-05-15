@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { View, Pressable, Alert } from 'react-native';
+import { ActivityIndicator, View, Pressable, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Plus, ListTodo } from 'lucide-react-native';
@@ -29,7 +29,7 @@ export function TasksScreen() {
   const styles = useMemo(() => createStyles(theme), [theme]);
   const navigation =
     useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
-  const { entries, categories, filters, setFilters, toggleComplete } =
+  const { entries, loading, categories, filters, setFilters, toggleComplete } =
     useTasksScreen();
 
   const categoryById = useMemo(
@@ -52,6 +52,9 @@ export function TasksScreen() {
     <Screen scroll>
       <View style={styles.header}>
         <Typography variant="h2">Tarefas</Typography>
+        {loading ? (
+          <ActivityIndicator size="small" color={theme.colors.accent} />
+        ) : null}
       </View>
 
       <View style={styles.filterRow}>

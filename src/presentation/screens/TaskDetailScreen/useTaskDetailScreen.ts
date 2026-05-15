@@ -38,11 +38,12 @@ export function useTaskDetailScreen(taskIdParam: string) {
   return {
     taskId,
     data,
-    loading,
+    loading: loading && data === null,
     category,
     complete,
     completeSubtask,
     remove,
-    busy: completeTask.loading || deleteTask.loading,
+    completing: completeTask.loading,
+    deleting: deleteTask.loading,
   };
 }

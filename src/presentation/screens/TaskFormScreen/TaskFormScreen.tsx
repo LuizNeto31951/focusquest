@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type {
   NativeStackNavigationProp,
@@ -13,6 +13,7 @@ import {
   Chip,
   CategoryChip,
   PriorityChip,
+  DateTimeField,
 } from '@/presentation/components';
 import { useTheme } from '@/presentation/providers';
 import type { Priority, Weekday } from '@/domain/value-objects';
@@ -54,8 +55,21 @@ export function TaskFormScreen() {
       await vm.submit();
       navigation.goBack();
     } catch {
-      // erro já exposto via vm.error
+      // mantém usuário na tela; erros aparecem inline + banner
     }
+  }
+
+  if (vm.loadingTaskData) {
+    return (
+      <Screen>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.accent} />
+          <Typography variant="body" color="secondary">
+            Carregando tarefa...
+          </Typography>
+        </View>
+      </Screen>
+    );
   }
 
   return (
@@ -70,6 +84,7 @@ export function TaskFormScreen() {
           value={vm.form.title}
           onChangeText={(text) => vm.update('title', text)}
           placeholder="O que você precisa fazer?"
+          errorText={vm.errors.title}
         />
       </View>
 
@@ -84,21 +99,34 @@ export function TaskFormScreen() {
       </View>
 
       <View style={styles.section}>
-        <Typography variant="label" color="secondary">Categoria</Typography>
-        <View style={styles.row}>
-          {vm.categories.map((cat) => (
-            <CategoryChip
-              key={cat.id}
-              category={cat}
-              selected={vm.form.categoryId === cat.id}
-              onPress={() => vm.update('categoryId', cat.id)}
-            />
-          ))}
-        </View>
+        <Typography variant="label" color="secondary">
+          Categoria
+        </Typography>
+        {vm.loadingCategories ? (
+          <ActivityIndicator color={theme.colors.accent} />
+        ) : (
+          <View style={styles.row}>
+            {vm.categories.map((cat) => (
+              <CategoryChip
+                key={cat.id}
+                category={cat}
+                selected={vm.form.categoryId === cat.id}
+                onPress={() => vm.update('categoryId', cat.id)}
+              />
+            ))}
+          </View>
+        )}
+        {vm.errors.categoryId ? (
+          <Typography variant="caption" color="danger">
+            {vm.errors.categoryId}
+          </Typography>
+        ) : null}
       </View>
 
       <View style={styles.section}>
-        <Typography variant="label" color="secondary">Prioridade</Typography>
+        <Typography variant="label" color="secondary">
+          Prioridade
+        </Typography>
         <View style={styles.row}>
           {ALL_PRIORITIES.map((p: Priority) => (
             <PriorityChip
@@ -119,13 +147,26 @@ export function TaskFormScreen() {
             vm.update('estimatedMinutes', text.replace(/[^0-9]/g, ''))
           }
           keyboardType="number-pad"
+          errorText={vm.errors.estimatedMinutes}
+        />
+      </View>
+
+      <View style={styles.section}>
+        <DateTimeField
+          label="Prazo (opcional)"
+          value={vm.form.dueDate}
+          onChange={(iso) => vm.update('dueDate', iso)}
+          mode="datetime"
+          helperText="Quando a tarefa precisa estar concluída"
         />
       </View>
 
       {!vm.isSubtask ? (
         <>
           <View style={styles.section}>
-            <Typography variant="label" color="secondary">Repetição</Typography>
+            <Typography variant="label" color="secondary">
+              Repetição
+            </Typography>
             <View style={styles.row}>
               {(['NONE', 'DAILY', 'WEEKLY', 'CUSTOM'] as RecurrenceMode[]).map(
                 (mode) => (
@@ -155,6 +196,11 @@ export function TaskFormScreen() {
                   />
                 ))}
               </View>
+              {vm.errors.weeklyDays ? (
+                <Typography variant="caption" color="danger">
+                  {vm.errors.weeklyDays}
+                </Typography>
+              ) : null}
             </View>
           ) : null}
 
@@ -167,15 +213,16 @@ export function TaskFormScreen() {
                   vm.update('customIntervalDays', text.replace(/[^0-9]/g, ''))
                 }
                 keyboardType="number-pad"
+                errorText={vm.errors.customIntervalDays}
               />
             </View>
           ) : null}
         </>
       ) : null}
 
-      {vm.error ? (
+      {vm.submitError ? (
         <Typography variant="body" color="danger" style={styles.errorText}>
-          {vm.error.message}
+          {vm.submitError.message}
         </Typography>
       ) : null}
 
@@ -183,13 +230,15 @@ export function TaskFormScreen() {
         <Button
           label={vm.isEdit ? 'Salvar alterações' : 'Criar tarefa'}
           fullWidth
-          loading={vm.loading}
+          loading={vm.submitting}
+          disabled={vm.submitAttempted && !vm.isValid}
           onPress={handleSubmit}
         />
         <Button
           label="Cancelar"
           variant="ghost"
           fullWidth
+          disabled={vm.submitting}
           onPress={() => navigation.goBack()}
         />
       </View>

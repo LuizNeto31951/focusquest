@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, Alert } from 'react-native';
+import { ActivityIndicator, View, Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type {
   NativeStackNavigationProp,
@@ -34,9 +34,12 @@ export function TaskDetailScreen() {
   if (!vm.data) {
     return (
       <Screen>
-        <Typography variant="body" color="secondary">
-          Carregando...
-        </Typography>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.colors.accent} />
+          <Typography variant="body" color="secondary">
+            Carregando tarefa...
+          </Typography>
+        </View>
       </Screen>
     );
   }
@@ -125,7 +128,8 @@ export function TaskDetailScreen() {
           <Button
             label={task.isRecurring ? 'Concluir hoje' : 'Marcar como concluída'}
             fullWidth
-            loading={vm.busy}
+            loading={vm.completing}
+            disabled={vm.deleting}
             onPress={handleComplete}
           />
         ) : null}
@@ -133,6 +137,7 @@ export function TaskDetailScreen() {
           label="Adicionar subtarefa"
           variant="secondary"
           fullWidth
+          disabled={vm.completing || vm.deleting}
           onPress={() =>
             navigation.navigate('TaskForm', { parentTaskId: task.id })
           }
@@ -141,12 +146,15 @@ export function TaskDetailScreen() {
           label="Editar"
           variant="secondary"
           fullWidth
+          disabled={vm.completing || vm.deleting}
           onPress={() => navigation.navigate('TaskForm', { taskId: task.id })}
         />
         <Button
           label="Excluir"
           variant="danger"
           fullWidth
+          loading={vm.deleting}
+          disabled={vm.completing}
           onPress={handleDelete}
         />
       </View>
