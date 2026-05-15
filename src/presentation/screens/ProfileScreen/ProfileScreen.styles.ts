@@ -26,5 +26,8 @@ export function createStyles(theme: Theme) {
     statsCard: {
       gap: theme.spacing.xs,
     },
+    chartCard: {
+      marginBottom: theme.spacing.sm,
+    },
   });
 }

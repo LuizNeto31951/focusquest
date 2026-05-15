@@ -19,6 +19,7 @@ import type {
   EvaluateAchievementsUseCase,
   ListAchievementsUseCase,
   ListXPHistoryUseCase,
+  GetWeeklyStatsUseCase,
 } from '@/application';
 import type { NotificationScheduler } from '@/application/ports';
 
@@ -48,6 +49,7 @@ export interface AppDependencies {
   readonly listAchievements: ListAchievementsUseCase;
 
   readonly listXPHistory: ListXPHistoryUseCase;
+  readonly getWeeklyStats: GetWeeklyStatsUseCase;
 
   readonly notificationScheduler: NotificationScheduler;
 }

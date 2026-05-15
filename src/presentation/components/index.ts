@@ -18,3 +18,4 @@ export * from './XPToast';
 export * from './LevelUpModal';
 export * from './AchievementUnlockModal';
 export * from './GamificationFeedback';
+export * from './WeeklyChart';

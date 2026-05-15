@@ -3,6 +3,7 @@ import {
   useCurrentUser,
   useUserStats,
   useSkipDay,
+  useWeeklyStats,
 } from '@/presentation/hooks';
 import {
   useThemeMode,
@@ -13,9 +14,11 @@ import type { AccentPreset, Density, FontScale } from '@/presentation/theme';
 export function useProfileScreen() {
   const { user } = useCurrentUser();
   const { stats } = useUserStats(user?.id);
+  const { stats: weeklyStats } = useWeeklyStats(user?.id);
   const skipDay = useSkipDay();
   const { mode, toggleMode } = useThemeMode();
-  const { preferences, updatePreferences, resetPreferences } = useThemePreferences();
+  const { preferences, updatePreferences, resetPreferences } =
+    useThemePreferences();
 
   const setAccent = useCallback(
     (accent: AccentPreset) => updatePreferences({ accent }),
@@ -45,6 +48,7 @@ export function useProfileScreen() {
   return {
     user,
     stats,
+    weeklyStats,
     mode,
     preferences,
     toggleMode,

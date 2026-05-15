@@ -1,4 +1,4 @@
-import type { UniqueId } from '@/shared/types';
+import type { UniqueId, ISODate } from '@/shared/types';
 import type { XPLog } from '@/domain/entities';
 import type { XPLogRepository } from '@/domain/repositories';
 import type { SqliteClient } from '../SqliteClient';
@@ -35,6 +35,17 @@ export class SqliteXPLogRepository implements XPLogRepository {
        LIMIT ?`,
       userId,
       limit,
+    );
+    return rows.map(XPLogMapper.toDomain);
+  }
+
+  async findByUserSince(userId: UniqueId, since: ISODate): Promise<XPLog[]> {
+    const rows = await this.client.getAll<XPLogRow>(
+      `SELECT * FROM xp_logs
+       WHERE user_id = ? AND created_at >= ?
+       ORDER BY created_at ASC`,
+      userId,
+      since,
     );
     return rows.map(XPLogMapper.toDomain);
   }
