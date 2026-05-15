@@ -3,7 +3,7 @@ import { Platform, Pressable, View } from 'react-native';
 import DateTimePicker, {
   type DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
-import { CalendarClock, X } from 'lucide-react-native';
+import { CalendarClock, Clock, X } from 'lucide-react-native';
 import { Typography } from '@/presentation/components/Typography';
 import { Icon } from '@/presentation/components/Icon';
 import { useTheme } from '@/presentation/providers';
@@ -25,6 +25,7 @@ export function DateTimeField({
   const hasError = Boolean(errorText);
   const styles = useMemo(() => createStyles(theme, hasError), [theme, hasError]);
   const isAndroid = Platform.OS === 'android';
+  const isTimeOnly = mode === 'time';
 
   const [iosVisible, setIosVisible] = useState(false);
   const [androidStep, setAndroidStep] = useState<AndroidStep | null>(null);
@@ -32,17 +33,29 @@ export function DateTimeField({
 
   const currentDate = value ? new Date(value) : new Date();
 
+  function combineTimeIntoCurrentDate(time: Date): Date {
+    const base = value ? new Date(value) : new Date();
+    base.setHours(time.getHours(), time.getMinutes(), 0, 0);
+    return base;
+  }
+
   function open() {
     if (isAndroid) {
       setAndroidDraft(currentDate);
-      setAndroidStep(mode === 'datetime' ? 'date' : 'date');
+      if (mode === 'time') setAndroidStep('time');
+      else setAndroidStep('date');
     } else {
       setIosVisible(true);
     }
   }
 
   function handleIosChange(_: DateTimePickerEvent, selected?: Date) {
-    if (selected) onChange(selected.toISOString());
+    if (!selected) return;
+    if (isTimeOnly) {
+      onChange(combineTimeIntoCurrentDate(selected).toISOString());
+    } else {
+      onChange(selected.toISOString());
+    }
   }
 
   function handleAndroidChange(event: DateTimePickerEvent, selected?: Date) {
@@ -63,18 +76,24 @@ export function DateTimeField({
         onChange(selected.toISOString());
         setAndroidStep(null);
       }
-    } else if (androidStep === 'time' && androidDraft) {
-      const combined = new Date(androidDraft);
-      combined.setHours(selected.getHours());
-      combined.setMinutes(selected.getMinutes());
-      combined.setSeconds(0, 0);
-      onChange(combined.toISOString());
-      setAndroidStep(null);
-      setAndroidDraft(null);
+    } else if (androidStep === 'time') {
+      if (mode === 'time') {
+        onChange(combineTimeIntoCurrentDate(selected).toISOString());
+        setAndroidStep(null);
+      } else if (androidDraft) {
+        const combined = new Date(androidDraft);
+        combined.setHours(selected.getHours());
+        combined.setMinutes(selected.getMinutes());
+        combined.setSeconds(0, 0);
+        onChange(combined.toISOString());
+        setAndroidStep(null);
+        setAndroidDraft(null);
+      }
     }
   }
 
   const display = value ? formatLabel(value, mode) : placeholder;
+  const iconName = isTimeOnly ? Clock : CalendarClock;
 
   return (
     <View style={styles.wrapper}>
@@ -86,7 +105,7 @@ export function DateTimeField({
       <View style={styles.row}>
         <Pressable accessibilityRole="button" onPress={open} style={styles.input}>
           <Icon
-            name={CalendarClock}
+            name={iconName}
             size={18}
             color={value ? theme.colors.textPrimary : theme.colors.textDisabled}
           />
@@ -101,7 +120,7 @@ export function DateTimeField({
         {value ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Limpar prazo"
+            accessibilityLabel="Limpar"
             onPress={() => onChange(undefined)}
             style={styles.clearButton}
             hitSlop={8}
@@ -141,11 +160,17 @@ export function DateTimeField({
   );
 }
 
-function formatLabel(iso: string, mode: 'date' | 'datetime'): string {
+function formatLabel(iso: string, mode: 'date' | 'time' | 'datetime'): string {
   try {
     const d = new Date(iso);
     if (mode === 'date') {
       return d.toLocaleDateString('pt-BR');
+    }
+    if (mode === 'time') {
+      return d.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
     }
     return d.toLocaleString('pt-BR', {
       day: '2-digit',

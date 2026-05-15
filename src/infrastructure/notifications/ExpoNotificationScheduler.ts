@@ -1,5 +1,10 @@
+import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
-import { SchedulableTriggerInputTypes } from 'expo-notifications';
+import {
+  AndroidImportance,
+  AndroidNotificationPriority,
+  SchedulableTriggerInputTypes,
+} from 'expo-notifications';
 import type { UniqueId } from '@/shared/types';
 import type { Task } from '@/domain/entities';
 import type { Weekday } from '@/domain/value-objects';
@@ -8,8 +13,11 @@ import type { TaskNotificationRepository } from '@/domain/repositories';
 
 const CUSTOM_OCCURRENCES_AHEAD = 20;
 const DAY_MS = 24 * 60 * 60 * 1000;
+const ANDROID_CHANNEL_ID = 'task-reminders';
 
 export class ExpoNotificationScheduler implements NotificationScheduler {
+  private channelReady: Promise<void> | null = null;
+
   constructor(private readonly linkRepository: TaskNotificationRepository) {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
@@ -19,9 +27,25 @@ export class ExpoNotificationScheduler implements NotificationScheduler {
         shouldSetBadge: false,
       }),
     });
+    if (Platform.OS === 'android') {
+      this.channelReady = this.setupAndroidChannel();
+    }
+  }
+
+  private async setupAndroidChannel(): Promise<void> {
+    await Notifications.setNotificationChannelAsync(ANDROID_CHANNEL_ID, {
+      name: 'Lembretes de tarefas',
+      importance: AndroidImportance.HIGH,
+      vibrationPattern: [0, 250, 250, 250],
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      enableLights: true,
+      enableVibrate: true,
+      showBadge: false,
+    });
   }
 
   async requestPermissions(): Promise<boolean> {
+    if (this.channelReady) await this.channelReady;
     const current = await Notifications.getPermissionsAsync();
     if (current.granted) return true;
     if (!current.canAskAgain) return false;
@@ -42,6 +66,7 @@ export class ExpoNotificationScheduler implements NotificationScheduler {
   }
 
   async scheduleForTask(task: Task): Promise<void> {
+    if (this.channelReady) await this.channelReady;
     await this.cancelForTask(task.id);
     if (!task.scheduledStartAt) return;
 
@@ -53,20 +78,29 @@ export class ExpoNotificationScheduler implements NotificationScheduler {
       title: task.title,
       body: 'Hora de começar esta tarefa.',
       data: { taskId: task.id },
+      priority: AndroidNotificationPriority.HIGH,
+      sound: 'default',
     };
 
-    if (!task.isRecurring || !task.recurrenceRule) {
-      if (start.getTime() <= Date.now()) return;
+    const scheduleAndStore = async (
+      trigger: Notifications.NotificationTriggerInput,
+    ): Promise<void> => {
       const id = await Notifications.scheduleNotificationAsync({
         content,
-        trigger: {
-          type: SchedulableTriggerInputTypes.DATE,
-          date: start,
-        },
+        trigger,
       });
       await this.linkRepository.save({
         taskId: task.id,
         notificationId: id,
+      });
+    };
+
+    if (!task.isRecurring || !task.recurrenceRule) {
+      if (start.getTime() <= Date.now()) return;
+      await scheduleAndStore({
+        type: SchedulableTriggerInputTypes.DATE,
+        date: start,
+        channelId: ANDROID_CHANNEL_ID,
       });
       return;
     }
@@ -76,35 +110,23 @@ export class ExpoNotificationScheduler implements NotificationScheduler {
     const rule = task.recurrenceRule;
 
     if (rule.frequency === 'DAILY') {
-      const id = await Notifications.scheduleNotificationAsync({
-        content,
-        trigger: {
-          type: SchedulableTriggerInputTypes.DAILY,
-          hour,
-          minute,
-        },
-      });
-      await this.linkRepository.save({
-        taskId: task.id,
-        notificationId: id,
+      await scheduleAndStore({
+        type: SchedulableTriggerInputTypes.DAILY,
+        hour,
+        minute,
+        channelId: ANDROID_CHANNEL_ID,
       });
       return;
     }
 
     if (rule.frequency === 'WEEKLY') {
       for (const day of rule.weekdays) {
-        const id = await Notifications.scheduleNotificationAsync({
-          content,
-          trigger: {
-            type: SchedulableTriggerInputTypes.WEEKLY,
-            weekday: weekdayToExpo(day),
-            hour,
-            minute,
-          },
-        });
-        await this.linkRepository.save({
-          taskId: task.id,
-          notificationId: id,
+        await scheduleAndStore({
+          type: SchedulableTriggerInputTypes.WEEKLY,
+          weekday: weekdayToExpo(day),
+          hour,
+          minute,
+          channelId: ANDROID_CHANNEL_ID,
         });
       }
       return;
@@ -119,16 +141,10 @@ export class ExpoNotificationScheduler implements NotificationScheduler {
         next = new Date(next.getTime() + interval * DAY_MS);
       }
       for (let i = 0; i < CUSTOM_OCCURRENCES_AHEAD; i++) {
-        const id = await Notifications.scheduleNotificationAsync({
-          content,
-          trigger: {
-            type: SchedulableTriggerInputTypes.DATE,
-            date: new Date(next),
-          },
-        });
-        await this.linkRepository.save({
-          taskId: task.id,
-          notificationId: id,
+        await scheduleAndStore({
+          type: SchedulableTriggerInputTypes.DATE,
+          date: new Date(next),
+          channelId: ANDROID_CHANNEL_ID,
         });
         next = new Date(next.getTime() + interval * DAY_MS);
       }

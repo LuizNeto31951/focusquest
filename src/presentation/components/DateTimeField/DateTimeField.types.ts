@@ -4,6 +4,6 @@ export interface DateTimeFieldProps {
   onChange: (iso: string | undefined) => void;
   helperText?: string;
   errorText?: string;
-  mode?: 'date' | 'datetime';
+  mode?: 'date' | 'time' | 'datetime';
   placeholder?: string;
 }

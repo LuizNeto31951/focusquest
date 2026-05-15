@@ -21,7 +21,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.luizneto31951.focusquest"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,6 +30,18 @@
     "plugins": [
       "expo-sqlite",
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "223facd2-b5b9-488e-a4ae-5f9b42156635"
+      }
+    },
+    "owner": "luizneto31951",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/223facd2-b5b9-488e-a4ae-5f9b42156635"
+    }
   }
 }
