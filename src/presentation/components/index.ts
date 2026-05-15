@@ -13,3 +13,7 @@ export * from './StreakIndicator';
 export * from './TaskCard';
 export * from './AchievementBadge';
 export * from './EmptyState';
+export * from './XPToast';
+export * from './LevelUpModal';
+export * from './AchievementUnlockModal';
+export * from './GamificationFeedback';

@@ -26,6 +26,7 @@ interface FeedbackState {
   clearXPAward: () => void;
   clearLevelUp: () => void;
   clearAchievements: () => void;
+  popAchievement: () => void;
   clearAll: () => void;
 }
 
@@ -44,6 +45,8 @@ export const useFeedbackStore = create<FeedbackState>((set) => ({
   clearXPAward: () => set({ pendingXPAward: null }),
   clearLevelUp: () => set({ pendingLevelUp: null }),
   clearAchievements: () => set({ pendingAchievements: [] }),
+  popAchievement: () =>
+    set((state) => ({ pendingAchievements: state.pendingAchievements.slice(1) })),
   clearAll: () =>
     set({
       pendingXPAward: null,

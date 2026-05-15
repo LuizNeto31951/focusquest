@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, AppBootstrap } from '@/presentation/providers';
 import { RootNavigator } from '@/presentation/navigation';
+import { GamificationFeedback } from '@/presentation/components';
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
           <NavigationContainer>
             <RootNavigator />
           </NavigationContainer>
+          <GamificationFeedback />
         </AppBootstrap>
       </ThemeProvider>
     </SafeAreaProvider>
