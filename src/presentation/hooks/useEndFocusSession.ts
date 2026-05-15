@@ -17,13 +17,9 @@ export function useEndFocusSession() {
   const setActiveSession = useFocusStore((s) => s.setActiveSession);
   const currentUser = useUserStore((s) => s.user);
   const setUser = useUserStore((s) => s.setUser);
-  const { pushXPAward, pushLevelUp, pushAchievements } = useFeedbackStore(
-    (s) => ({
-      pushXPAward: s.pushXPAward,
-      pushLevelUp: s.pushLevelUp,
-      pushAchievements: s.pushAchievements,
-    }),
-  );
+  const pushXPAward = useFeedbackStore((s) => s.pushXPAward);
+  const pushLevelUp = useFeedbackStore((s) => s.pushLevelUp);
+  const pushAchievements = useFeedbackStore((s) => s.pushAchievements);
 
   const fn = useCallback(
     async (input: EndFocusSessionInput): Promise<EndFocusSessionOutput> => {
