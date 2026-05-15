@@ -99,7 +99,11 @@ export function TaskDetailScreen() {
         ) : null}
         {task.scheduledStartAt ? (
           <Typography variant="caption" color="secondary">
-            Início: {new Date(task.scheduledStartAt).toLocaleString('pt-BR')}
+            Início:{' '}
+            {new Date(task.scheduledStartAt).toLocaleTimeString('pt-BR', {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
           </Typography>
         ) : null}
         {task.isRecurring ? (

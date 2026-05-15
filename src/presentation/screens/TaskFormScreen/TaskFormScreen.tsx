@@ -163,18 +163,14 @@ export function TaskFormScreen() {
 
       <View style={styles.section}>
         <DateTimeField
-          label={
-            vm.form.recurrenceMode === 'NONE'
-              ? 'Horário de início (opcional)'
-              : 'Horário (toca em cada dia da recorrência)'
-          }
+          label="Horário de início (opcional)"
           value={vm.form.scheduledStartAt}
           onChange={(iso) => vm.update('scheduledStartAt', iso)}
-          mode={vm.form.recurrenceMode === 'NONE' ? 'datetime' : 'time'}
+          mode="time"
           helperText={
             vm.form.recurrenceMode === 'NONE'
-              ? 'Você receberá uma notificação neste horário'
-              : 'A notificação dispara nos dias marcados, neste horário'
+              ? 'Lembrete dispara hoje neste horário (ou amanhã se já passou)'
+              : 'Dispara nos dias marcados, neste horário'
           }
         />
       </View>

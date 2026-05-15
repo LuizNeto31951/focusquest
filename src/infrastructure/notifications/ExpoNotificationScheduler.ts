@@ -96,10 +96,10 @@ export class ExpoNotificationScheduler implements NotificationScheduler {
     };
 
     if (!task.isRecurring || !task.recurrenceRule) {
-      if (start.getTime() <= Date.now()) return;
+      const target = nextOccurrenceFromTime(start);
       await scheduleAndStore({
         type: SchedulableTriggerInputTypes.DATE,
-        date: start,
+        date: target,
         channelId: ANDROID_CHANNEL_ID,
       });
       return;
@@ -154,4 +154,13 @@ export class ExpoNotificationScheduler implements NotificationScheduler {
 
 function weekdayToExpo(weekday: Weekday): number {
   return weekday + 1;
+}
+
+function nextOccurrenceFromTime(source: Date): Date {
+  const target = new Date();
+  target.setHours(source.getHours(), source.getMinutes(), 0, 0);
+  if (target.getTime() <= Date.now()) {
+    target.setDate(target.getDate() + 1);
+  }
+  return target;
 }
