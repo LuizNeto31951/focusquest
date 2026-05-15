@@ -74,13 +74,15 @@ export function HomeScreen() {
         />
       ) : (
         <View style={styles.list}>
-          {pendingTasksToday.map((task) => (
+          {pendingTasksToday.map((entry) => (
             <TaskCard
-              key={task.id}
-              task={task}
-              category={categoryById.get(task.categoryId)}
+              key={entry.task.id}
+              task={entry.task}
+              category={categoryById.get(entry.task.categoryId)}
+              isCompletedToday={entry.isCompletedToday}
+              isRecurringInstance={entry.isRecurringInstance}
               onToggleComplete={async () => {
-                await completeTask.run({ taskId: task.id });
+                await completeTask.run({ taskId: entry.task.id });
                 refetchTasks();
               }}
             />

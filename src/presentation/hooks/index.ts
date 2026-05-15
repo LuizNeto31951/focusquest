@@ -2,6 +2,7 @@ export { useMutation, type UseMutationResult } from './useMutation';
 export { useCurrentUser } from './useCurrentUser';
 export { useUserStats } from './useUserStats';
 export { useTasks } from './useTasks';
+export { useTodaysTasks } from './useTodaysTasks';
 export { useTaskWithSubtasks } from './useTaskWithSubtasks';
 export { useCategories } from './useCategories';
 export { useActiveFocusSession } from './useActiveFocusSession';

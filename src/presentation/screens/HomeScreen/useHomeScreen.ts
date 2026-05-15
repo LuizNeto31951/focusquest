@@ -1,28 +1,25 @@
 import { useMemo } from 'react';
-import { useCurrentUser, useUserStats, useTasks } from '@/presentation/hooks';
+import {
+  useCurrentUser,
+  useUserStats,
+  useTodaysTasks,
+} from '@/presentation/hooks';
 import { ISODate } from '@/shared/types';
-import type { ListTasksInput } from '@/application/use-cases/tasks';
 
 export function useHomeScreen() {
   const { user } = useCurrentUser();
   const { stats } = useUserStats(user?.id);
 
-  const tasksInput = useMemo<ListTasksInput>(
-    () => ({
-      userId: user?.id ?? ('' as never),
-      onlyPending: true,
-      dueOnDay: ISODate.now(),
-      onlyTopLevel: true,
-    }),
-    [user?.id],
-  );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const today = useMemo(() => ISODate.now(), [user?.id]);
+  const { tasks, refetch } = useTodaysTasks(user?.id, today);
 
-  const { tasks, refetch } = useTasks(tasksInput);
+  const pending = tasks.filter((entry) => !entry.isCompletedToday);
 
   return {
     user,
     stats,
-    pendingTasksToday: user ? tasks : [],
+    pendingTasksToday: user ? pending : [],
     refetchTasks: refetch,
   };
 }

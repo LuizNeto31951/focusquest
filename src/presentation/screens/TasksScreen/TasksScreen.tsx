@@ -29,7 +29,7 @@ export function TasksScreen() {
   const styles = useMemo(() => createStyles(theme), [theme]);
   const navigation =
     useNavigation<NativeStackNavigationProp<TasksStackParamList>>();
-  const { tasks, categories, filters, setFilters, toggleComplete } =
+  const { entries, categories, filters, setFilters, toggleComplete } =
     useTasksScreen();
 
   const categoryById = useMemo(
@@ -70,7 +70,7 @@ export function TasksScreen() {
         </View>
       ) : null}
 
-      {tasks.length === 0 ? (
+      {entries.length === 0 ? (
         <EmptyState
           icon={ListTodo}
           title="Nenhuma tarefa por aqui"
@@ -78,13 +78,17 @@ export function TasksScreen() {
         />
       ) : (
         <View style={styles.list}>
-          {tasks.map((task) => (
+          {entries.map((entry) => (
             <TaskCard
-              key={task.id}
-              task={task}
-              category={categoryById.get(task.categoryId)}
-              onPress={() => navigation.navigate('TaskDetail', { taskId: task.id })}
-              onToggleComplete={() => toggleComplete(task.id)}
+              key={entry.task.id}
+              task={entry.task}
+              category={categoryById.get(entry.task.categoryId)}
+              isCompletedToday={entry.isCompletedToday}
+              isRecurringInstance={entry.isRecurringInstance}
+              onPress={() =>
+                navigation.navigate('TaskDetail', { taskId: entry.task.id })
+              }
+              onToggleComplete={() => toggleComplete(entry.task.id)}
             />
           ))}
         </View>

@@ -8,3 +8,7 @@ export {
 } from './UserAchievementMapper';
 export { FocusSessionMapper, type FocusSessionRow } from './FocusSessionMapper';
 export { XPLogMapper, type XPLogRow } from './XPLogMapper';
+export {
+  TaskDailyCompletionMapper,
+  type TaskDailyCompletionRow,
+} from './TaskDailyCompletionMapper';

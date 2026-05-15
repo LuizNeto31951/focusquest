@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
-import { Check, Circle, CalendarClock } from 'lucide-react-native';
+import { Check, Circle, CalendarClock, Repeat } from 'lucide-react-native';
 import { useTheme } from '@/presentation/providers';
 import { Typography } from '@/presentation/components/Typography';
 import { Icon } from '@/presentation/components/Icon';
@@ -13,6 +13,8 @@ import { ISODate } from '@/shared/types';
 interface TaskCardProps {
   task: Task;
   category?: Category;
+  isCompletedToday?: boolean;
+  isRecurringInstance?: boolean;
   onPress?: () => void;
   onToggleComplete?: () => void;
 }
@@ -20,13 +22,16 @@ interface TaskCardProps {
 export function TaskCard({
   task,
   category,
+  isCompletedToday,
+  isRecurringInstance,
   onPress,
   onToggleComplete,
 }: TaskCardProps) {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const completed = isTaskCompleted(task);
-  const overdue = isTaskOverdue(task, ISODate.now());
+  const completed = isCompletedToday ?? isTaskCompleted(task);
+  const overdue = !isRecurringInstance && isTaskOverdue(task, ISODate.now());
+  const showRecurringBadge = isRecurringInstance ?? task.isRecurring;
 
   return (
     <Pressable
@@ -51,16 +56,21 @@ export function TaskCard({
         />
       </Pressable>
       <View style={styles.content}>
-        <Typography
-          variant="bodyEmphasis"
-          style={completed ? styles.completedText : undefined}
-        >
-          {task.title}
-        </Typography>
+        <View style={styles.titleRow}>
+          <Typography
+            variant="bodyEmphasis"
+            style={completed ? styles.completedText : undefined}
+          >
+            {task.title}
+          </Typography>
+          {showRecurringBadge ? (
+            <Icon name={Repeat} size={14} color={theme.colors.accent} />
+          ) : null}
+        </View>
         <View style={styles.meta}>
           {category ? <CategoryChip category={category} /> : null}
           <PriorityChip priority={task.priority} />
-          {task.dueDate ? (
+          {task.dueDate && !isRecurringInstance ? (
             <View style={styles.due}>
               <Icon
                 name={CalendarClock}
@@ -119,6 +129,11 @@ function createStyles(theme: ReturnType<typeof useTheme>) {
     content: {
       flex: 1,
       gap: theme.spacing.sm,
+    },
+    titleRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.spacing.xs,
     },
     meta: {
       flexDirection: 'row',

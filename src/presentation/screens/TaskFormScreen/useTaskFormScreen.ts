@@ -7,7 +7,13 @@ import {
   useTaskWithSubtasks,
   useUpdateTask,
 } from '@/presentation/hooks';
-import type { Priority } from '@/domain/value-objects';
+import {
+  RecurrenceRule,
+  type Priority,
+  type Weekday,
+} from '@/domain/value-objects';
+
+export type RecurrenceMode = 'NONE' | 'DAILY' | 'WEEKLY' | 'CUSTOM';
 
 export interface TaskFormState {
   title: string;
@@ -16,6 +22,9 @@ export interface TaskFormState {
   priority: Priority;
   estimatedMinutes: string;
   dueDate?: string;
+  recurrenceMode: RecurrenceMode;
+  weeklyDays: readonly Weekday[];
+  customIntervalDays: string;
 }
 
 const EMPTY: TaskFormState = {
@@ -25,12 +34,16 @@ const EMPTY: TaskFormState = {
   priority: 'MEDIUM',
   estimatedMinutes: '25',
   dueDate: undefined,
+  recurrenceMode: 'NONE',
+  weeklyDays: [],
+  customIntervalDays: '2',
 };
 
 export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
   const taskUniqueId = taskId ? UniqueId.from(taskId) : undefined;
   const parentTaskId = parentTaskIdParam ? UniqueId.from(parentTaskIdParam) : undefined;
   const isEdit = Boolean(taskUniqueId);
+  const isSubtask = Boolean(parentTaskId);
 
   const { user } = useCurrentUser();
   const { categories } = useCategories();
@@ -42,13 +55,32 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
 
   useEffect(() => {
     if (data?.task) {
+      const t = data.task;
+      let recurrenceMode: RecurrenceMode = 'NONE';
+      let weeklyDays: readonly Weekday[] = [];
+      let customIntervalDays = '2';
+      if (t.isRecurring && t.recurrenceRule) {
+        const rule = t.recurrenceRule;
+        if (rule.frequency === 'DAILY') recurrenceMode = 'DAILY';
+        if (rule.frequency === 'WEEKLY') {
+          recurrenceMode = 'WEEKLY';
+          weeklyDays = rule.weekdays;
+        }
+        if (rule.frequency === 'CUSTOM') {
+          recurrenceMode = 'CUSTOM';
+          customIntervalDays = String(rule.intervalDays);
+        }
+      }
       setForm({
-        title: data.task.title,
-        description: data.task.description ?? '',
-        categoryId: data.task.categoryId,
-        priority: data.task.priority,
-        estimatedMinutes: String(data.task.estimatedMinutes),
-        dueDate: data.task.dueDate,
+        title: t.title,
+        description: t.description ?? '',
+        categoryId: t.categoryId,
+        priority: t.priority,
+        estimatedMinutes: String(t.estimatedMinutes),
+        dueDate: t.dueDate,
+        recurrenceMode,
+        weeklyDays,
+        customIntervalDays,
       });
     } else if (!isEdit && categories.length > 0 && !form.categoryId) {
       setForm((f) => ({ ...f, categoryId: categories[0]!.id }));
@@ -56,8 +88,21 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.task, categories.length, isEdit]);
 
-  const update = useCallback(<K extends keyof TaskFormState>(key: K, value: TaskFormState[K]) => {
-    setForm((f) => ({ ...f, [key]: value }));
+  const update = useCallback(
+    <K extends keyof TaskFormState>(key: K, value: TaskFormState[K]) => {
+      setForm((f) => ({ ...f, [key]: value }));
+    },
+    [],
+  );
+
+  const toggleWeekday = useCallback((day: Weekday) => {
+    setForm((f) => {
+      const set = new Set(f.weeklyDays);
+      if (set.has(day)) set.delete(day);
+      else set.add(day);
+      const ordered = Array.from(set).sort((a, b) => a - b) as Weekday[];
+      return { ...f, weeklyDays: ordered };
+    });
   }, []);
 
   const submit = useCallback(async () => {
@@ -70,6 +115,26 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
 
     const dueDate = form.dueDate ? ISODate.from(form.dueDate) : undefined;
 
+    let isRecurring = false;
+    let recurrenceRule: import('@/domain/value-objects').RecurrenceRule | undefined;
+    if (!isSubtask && form.recurrenceMode !== 'NONE') {
+      isRecurring = true;
+      if (form.recurrenceMode === 'DAILY') {
+        recurrenceRule = RecurrenceRule.daily();
+      } else if (form.recurrenceMode === 'WEEKLY') {
+        if (form.weeklyDays.length === 0) {
+          throw new Error('Selecione ao menos um dia da semana');
+        }
+        recurrenceRule = RecurrenceRule.weekly(form.weeklyDays);
+      } else if (form.recurrenceMode === 'CUSTOM') {
+        const interval = parseInt(form.customIntervalDays, 10);
+        if (Number.isNaN(interval) || interval < 1) {
+          throw new Error('Intervalo inválido');
+        }
+        recurrenceRule = RecurrenceRule.custom(interval);
+      }
+    }
+
     if (isEdit && taskUniqueId) {
       await updateTask.run({
         id: taskUniqueId,
@@ -79,6 +144,8 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
         priority: form.priority,
         estimatedMinutes: minutes,
         dueDate: dueDate ?? null,
+        isRecurring,
+        recurrenceRule: recurrenceRule ?? null,
       });
     } else {
       await createTask.run({
@@ -90,14 +157,27 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
         priority: form.priority,
         estimatedMinutes: minutes,
         dueDate,
+        isRecurring,
+        recurrenceRule,
       });
     }
-  }, [user, form, isEdit, taskUniqueId, parentTaskId, createTask, updateTask]);
+  }, [
+    user,
+    form,
+    isEdit,
+    isSubtask,
+    taskUniqueId,
+    parentTaskId,
+    createTask,
+    updateTask,
+  ]);
 
   return {
     isEdit,
+    isSubtask,
     form,
     update,
+    toggleWeekday,
     categories,
     submit,
     loading: createTask.loading || updateTask.loading,

@@ -12,3 +12,8 @@ export {
   type GetTaskWithSubtasksInput,
   type TaskWithSubtasks,
 } from './GetTaskWithSubtasksUseCase';
+export {
+  ListTodaysTasksUseCase,
+  type ListTodaysTasksInput,
+  type TaskForDay,
+} from './ListTodaysTasksUseCase';

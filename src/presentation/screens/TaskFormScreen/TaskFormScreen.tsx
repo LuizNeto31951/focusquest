@@ -10,17 +10,35 @@ import {
   Typography,
   Input,
   Button,
+  Chip,
   CategoryChip,
   PriorityChip,
 } from '@/presentation/components';
 import { useTheme } from '@/presentation/providers';
-import type { Priority } from '@/domain/value-objects';
-import { ALL_PRIORITIES } from '@/domain/value-objects';
+import type { Priority, Weekday } from '@/domain/value-objects';
+import { ALL_PRIORITIES, ALL_WEEKDAYS } from '@/domain/value-objects';
 import type { TasksStackParamList } from '@/presentation/navigation/types';
-import { useTaskFormScreen } from './useTaskFormScreen';
+import { useTaskFormScreen, type RecurrenceMode } from './useTaskFormScreen';
 import { createStyles } from './TaskFormScreen.styles';
 
 type Props = NativeStackScreenProps<TasksStackParamList, 'TaskForm'>['route'];
+
+const RECURRENCE_LABELS: Record<RecurrenceMode, string> = {
+  NONE: 'Não repete',
+  DAILY: 'Todos os dias',
+  WEEKLY: 'Semanalmente',
+  CUSTOM: 'A cada N dias',
+};
+
+const WEEKDAY_LABELS: Record<Weekday, string> = {
+  0: 'Dom',
+  1: 'Seg',
+  2: 'Ter',
+  3: 'Qua',
+  4: 'Qui',
+  5: 'Sex',
+  6: 'Sáb',
+};
 
 export function TaskFormScreen() {
   const theme = useTheme();
@@ -97,10 +115,63 @@ export function TaskFormScreen() {
         <Input
           label="Duração estimada (minutos)"
           value={vm.form.estimatedMinutes}
-          onChangeText={(text) => vm.update('estimatedMinutes', text.replace(/[^0-9]/g, ''))}
+          onChangeText={(text) =>
+            vm.update('estimatedMinutes', text.replace(/[^0-9]/g, ''))
+          }
           keyboardType="number-pad"
         />
       </View>
+
+      {!vm.isSubtask ? (
+        <>
+          <View style={styles.section}>
+            <Typography variant="label" color="secondary">Repetição</Typography>
+            <View style={styles.row}>
+              {(['NONE', 'DAILY', 'WEEKLY', 'CUSTOM'] as RecurrenceMode[]).map(
+                (mode) => (
+                  <Chip
+                    key={mode}
+                    label={RECURRENCE_LABELS[mode]}
+                    selected={vm.form.recurrenceMode === mode}
+                    onPress={() => vm.update('recurrenceMode', mode)}
+                  />
+                ),
+              )}
+            </View>
+          </View>
+
+          {vm.form.recurrenceMode === 'WEEKLY' ? (
+            <View style={styles.section}>
+              <Typography variant="label" color="secondary">
+                Dias da semana
+              </Typography>
+              <View style={styles.row}>
+                {ALL_WEEKDAYS.map((day) => (
+                  <Chip
+                    key={day}
+                    label={WEEKDAY_LABELS[day]}
+                    selected={vm.form.weeklyDays.includes(day)}
+                    onPress={() => vm.toggleWeekday(day)}
+                  />
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {vm.form.recurrenceMode === 'CUSTOM' ? (
+            <View style={styles.section}>
+              <Input
+                label="Repetir a cada quantos dias?"
+                value={vm.form.customIntervalDays}
+                onChangeText={(text) =>
+                  vm.update('customIntervalDays', text.replace(/[^0-9]/g, ''))
+                }
+                keyboardType="number-pad"
+              />
+            </View>
+          ) : null}
+        </>
+      ) : null}
 
       {vm.error ? (
         <Typography variant="body" color="danger" style={styles.errorText}>

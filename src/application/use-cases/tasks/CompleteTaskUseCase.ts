@@ -1,12 +1,14 @@
 import { NotFoundError, ValidationError } from '@/shared/errors';
-import type { UniqueId } from '@/shared/types';
+import type { UniqueId, ISODate } from '@/shared/types';
 import {
   awardXP,
   canCompleteParent,
   completeTask,
   createXPLog,
+  dayKeyFromISODate,
   isSubtask,
   isTaskCompleted,
+  recordDailyCompletion,
   setStreak,
   type Achievement,
   type Task,
@@ -14,6 +16,7 @@ import {
 } from '@/domain/entities';
 import { XP } from '@/domain/value-objects';
 import type {
+  TaskDailyCompletionRepository,
   TaskRepository,
   UserRepository,
   XPLogRepository,
@@ -43,6 +46,7 @@ export class CompleteTaskUseCase {
     private readonly taskRepository: TaskRepository,
     private readonly userRepository: UserRepository,
     private readonly xpLogRepository: XPLogRepository,
+    private readonly dailyCompletionRepository: TaskDailyCompletionRepository,
     private readonly evaluateAchievements: EvaluateAchievementsUseCase,
     private readonly clock: Clock,
     private readonly idGenerator: IdGenerator,
@@ -51,11 +55,24 @@ export class CompleteTaskUseCase {
   async execute(input: CompleteTaskInput): Promise<CompleteTaskOutput> {
     const task = await this.taskRepository.findById(input.taskId);
     if (!task) throw new NotFoundError('Task', input.taskId);
-    if (isTaskCompleted(task)) {
+
+    const now = this.clock.now();
+    const nowDate = new Date(now);
+    const dayKey = dayKeyFromISODate(now);
+
+    if (task.isRecurring) {
+      const existing = await this.dailyCompletionRepository.findByTaskAndDay(
+        task.id,
+        dayKey,
+      );
+      if (existing) {
+        throw new ValidationError('Recurring task is already completed today');
+      }
+    } else if (isTaskCompleted(task)) {
       throw new ValidationError('Task is already completed');
     }
 
-    if (!isSubtask(task)) {
+    if (!isSubtask(task) && !task.isRecurring) {
       const subtasks = await this.taskRepository.findSubtasksOf(task.id);
       if (!canCompleteParent(task, subtasks)) {
         throw new ValidationError(
@@ -67,14 +84,12 @@ export class CompleteTaskUseCase {
     const user = await this.userRepository.findById(task.userId);
     if (!user) throw new NotFoundError('User', task.userId);
 
-    const now = this.clock.now();
-    const nowDate = new Date(now);
-
     const updatedStreak = StreakCalculator.recordActivity(user.streak, now);
-    const completedTask = completeTask(task, now);
+
+    const persistedTask = task.isRecurring ? task : completeTask(task, now);
 
     const { xpAwarded, breakdown } = await this.computeAndAwardXP({
-      task: completedTask,
+      task: persistedTask,
       user,
       now,
       nowDate,
@@ -84,7 +99,13 @@ export class CompleteTaskUseCase {
     const userAfterXP = awardXP(user, xpAwarded, now);
     const userAfterStreak = setStreak(userAfterXP, updatedStreak, now);
 
-    await this.taskRepository.save(completedTask);
+    if (task.isRecurring) {
+      await this.dailyCompletionRepository.save(
+        recordDailyCompletion(task.id, dayKey, now),
+      );
+    } else {
+      await this.taskRepository.save(persistedTask);
+    }
     await this.userRepository.save(userAfterStreak);
 
     const newlyUnlockedAchievements = await this.evaluateAchievements.execute({
@@ -92,7 +113,7 @@ export class CompleteTaskUseCase {
     });
 
     return {
-      task: completedTask,
+      task: persistedTask,
       user: userAfterStreak,
       xpAwarded,
       breakdown,
@@ -103,7 +124,7 @@ export class CompleteTaskUseCase {
   private async computeAndAwardXP(params: {
     task: Task;
     user: User;
-    now: import('@/shared/types').ISODate;
+    now: ISODate;
     nowDate: Date;
     currentStreakDays: number;
   }): Promise<{ xpAwarded: XP; breakdown: TaskXPBreakdown | null }> {
@@ -141,7 +162,7 @@ export class CompleteTaskUseCase {
     amount: XP,
     source: 'TASK_COMPLETION' | 'SUBTASK_COMPLETION',
     taskId: UniqueId,
-    now: import('@/shared/types').ISODate,
+    now: ISODate,
   ): Promise<void> {
     if (amount <= 0) return;
     await this.xpLogRepository.save(

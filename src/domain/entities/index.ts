@@ -52,3 +52,9 @@ export {
   type CreateXPLogProps,
   createXPLog,
 } from './XPLog';
+
+export {
+  type TaskDailyCompletion,
+  recordDailyCompletion,
+  dayKeyFromISODate,
+} from './TaskDailyCompletion';

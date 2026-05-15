@@ -95,4 +95,15 @@ CREATE TABLE IF NOT EXISTS xp_logs (
 
 CREATE INDEX IF NOT EXISTS idx_xp_logs_user_created
   ON xp_logs(user_id, created_at);
+
+CREATE TABLE IF NOT EXISTS task_daily_completions (
+  task_id TEXT NOT NULL,
+  day TEXT NOT NULL,
+  completed_at TEXT NOT NULL,
+  PRIMARY KEY (task_id, day),
+  FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_task_daily_completions_day
+  ON task_daily_completions(day);
 `;

@@ -9,3 +9,4 @@ export {
   AchievementEvaluator,
   type UserProgressSnapshot,
 } from './AchievementEvaluator';
+export { RecurrenceMatcher } from './RecurrenceMatcher';

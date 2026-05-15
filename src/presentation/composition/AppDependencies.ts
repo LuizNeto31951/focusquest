@@ -11,6 +11,7 @@ import type {
   DeleteTaskUseCase,
   CompleteTaskUseCase,
   ListTasksUseCase,
+  ListTodaysTasksUseCase,
   GetTaskWithSubtasksUseCase,
   StartFocusSessionUseCase,
   EndFocusSessionUseCase,
@@ -35,6 +36,7 @@ export interface AppDependencies {
   readonly deleteTask: DeleteTaskUseCase;
   readonly completeTask: CompleteTaskUseCase;
   readonly listTasks: ListTasksUseCase;
+  readonly listTodaysTasks: ListTodaysTasksUseCase;
   readonly getTaskWithSubtasks: GetTaskWithSubtasksUseCase;
 
   readonly startFocusSession: StartFocusSessionUseCase;

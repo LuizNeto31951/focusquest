@@ -1,40 +1,40 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import type { Task } from '@/domain/entities';
-import type { ListTasksInput } from '@/application/use-cases/tasks';
+import { useCallback, useEffect, useState } from 'react';
+import type { UniqueId, ISODate } from '@/shared/types';
+import type { TaskForDay } from '@/application/use-cases/tasks';
 import { useAppDependencies } from '@/presentation/providers';
 import { useInvalidationStore } from '@/presentation/stores';
 
-export function useTasks(input: ListTasksInput, enabled = true) {
-  const { listTasks } = useAppDependencies();
+export function useTodaysTasks(
+  userId: UniqueId | undefined,
+  day: ISODate,
+  enabled = true,
+) {
+  const { listTodaysTasks } = useAppDependencies();
   const tasksVersion = useInvalidationStore((s) => s.tasksVersion);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<TaskForDay[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const inputKey = JSON.stringify(input);
-  const inputRef = useRef(input);
-  inputRef.current = input;
-
   const load = useCallback(async () => {
-    if (!enabled) {
+    if (!enabled || !userId) {
       setTasks([]);
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const result = await listTasks.execute(inputRef.current);
+      const result = await listTodaysTasks.execute({ userId, day });
       setTasks(result);
     } catch (err) {
       setError(err as Error);
     } finally {
       setLoading(false);
     }
-  }, [enabled, listTasks]);
+  }, [enabled, userId, day, listTodaysTasks]);
 
   useEffect(() => {
     load();
-  }, [inputKey, load, tasksVersion]);
+  }, [load, tasksVersion]);
 
   return { tasks, loading, error, refetch: load };
 }
