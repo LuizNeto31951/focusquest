@@ -5,16 +5,11 @@ import type {
 } from '@/application/use-cases/tasks';
 import { LevelCalculator } from '@/domain/services';
 import { useAppDependencies } from '@/presentation/providers';
-import {
-  useFeedbackStore,
-  useTasksStore,
-  useUserStore,
-} from '@/presentation/stores';
+import { useFeedbackStore, useUserStore } from '@/presentation/stores';
 import { useMutation } from './useMutation';
 
 export function useCompleteTask() {
   const { completeTask } = useAppDependencies();
-  const upsertTask = useTasksStore((s) => s.upsertTask);
   const currentUser = useUserStore((s) => s.user);
   const setUser = useUserStore((s) => s.setUser);
   const pushXPAward = useFeedbackStore((s) => s.pushXPAward);
@@ -26,7 +21,6 @@ export function useCompleteTask() {
       const previousXP = currentUser?.totalXP;
       const output = await completeTask.execute(input);
 
-      upsertTask(output.task);
       setUser(output.user);
 
       if (output.xpAwarded > 0) {
@@ -54,7 +48,6 @@ export function useCompleteTask() {
     },
     [
       completeTask,
-      upsertTask,
       setUser,
       currentUser,
       pushXPAward,
