@@ -10,12 +10,15 @@ const Stack = createNativeStackNavigator<TasksStackParamList>();
 
 export function TasksStack() {
   const theme = useTheme();
+  const reduceMotion = theme.preferences.reduceMotion;
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: { backgroundColor: theme.colors.background },
         headerTintColor: theme.colors.textPrimary,
         contentStyle: { backgroundColor: theme.colors.background },
+        animation: reduceMotion ? 'none' : 'slide_from_right',
+        animationDuration: 220,
       }}
     >
       <Stack.Screen
@@ -31,7 +34,11 @@ export function TasksStack() {
       <Stack.Screen
         name="TaskForm"
         component={TaskFormScreen}
-        options={{ title: 'Tarefa', presentation: 'modal' }}
+        options={{
+          title: 'Tarefa',
+          presentation: 'modal',
+          animation: reduceMotion ? 'none' : 'slide_from_bottom',
+        }}
       />
     </Stack.Navigator>
   );

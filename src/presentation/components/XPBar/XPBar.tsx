@@ -1,5 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { useTheme } from '@/presentation/providers';
 import { Typography } from '@/presentation/components/Typography';
 
@@ -13,7 +19,23 @@ interface XPBarProps {
 export function XPBar({ level, progress, xpRemaining, compact = false }: XPBarProps) {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const clamped = Math.min(1, Math.max(0, progress));
+  const reduceMotion = theme.preferences.reduceMotion;
+  const target = Math.min(1, Math.max(0, progress)) * 100;
+
+  const widthPercent = useSharedValue(target);
+
+  useEffect(() => {
+    widthPercent.value = reduceMotion
+      ? target
+      : withTiming(target, {
+          duration: 700,
+          easing: Easing.out(Easing.cubic),
+        });
+  }, [target, reduceMotion, widthPercent]);
+
+  const fillStyle = useAnimatedStyle(() => ({
+    width: `${widthPercent.value}%`,
+  }));
 
   return (
     <View style={styles.wrapper}>
@@ -28,7 +50,7 @@ export function XPBar({ level, progress, xpRemaining, compact = false }: XPBarPr
         ) : null}
       </View>
       <View style={styles.track}>
-        <View style={[styles.fill, { width: `${clamped * 100}%` }]} />
+        <Animated.View style={[styles.fill, fillStyle]} />
       </View>
     </View>
   );

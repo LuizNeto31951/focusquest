@@ -9,12 +9,15 @@ const Stack = createNativeStackNavigator<FocusStackParamList>();
 
 export function FocusStack() {
   const theme = useTheme();
+  const reduceMotion = theme.preferences.reduceMotion;
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: { backgroundColor: theme.colors.background },
         headerTintColor: theme.colors.textPrimary,
         contentStyle: { backgroundColor: theme.colors.background },
+        animation: reduceMotion ? 'none' : 'fade',
+        animationDuration: 220,
       }}
     >
       <Stack.Screen

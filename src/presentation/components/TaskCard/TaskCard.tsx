@@ -1,5 +1,10 @@
 import React, { useMemo } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+} from 'react-native-reanimated';
 import { Check, Circle, CalendarClock, Repeat } from 'lucide-react-native';
 import { useTheme } from '@/presentation/providers';
 import { Typography } from '@/presentation/components/Typography';
@@ -29,11 +34,17 @@ export function TaskCard({
 }: TaskCardProps) {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const reduceMotion = theme.preferences.reduceMotion;
   const completed = isCompletedToday ?? isTaskCompleted(task);
   const overdue = !isRecurringInstance && isTaskOverdue(task, ISODate.now());
   const showRecurringBadge = isRecurringInstance ?? task.isRecurring;
 
   return (
+    <Animated.View
+      entering={reduceMotion ? undefined : FadeIn.duration(220)}
+      exiting={reduceMotion ? undefined : FadeOut.duration(160)}
+      layout={reduceMotion ? undefined : LinearTransition.duration(220)}
+    >
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [
@@ -85,6 +96,7 @@ export function TaskCard({
         </View>
       </View>
     </Pressable>
+    </Animated.View>
   );
 }
 

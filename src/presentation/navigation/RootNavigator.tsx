@@ -14,10 +14,12 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export function RootNavigator() {
   const theme = useTheme();
+  const reduceMotion = theme.preferences.reduceMotion;
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        animation: reduceMotion ? 'none' : 'shift',
         tabBarActiveTintColor: theme.colors.accent,
         tabBarInactiveTintColor: theme.colors.textSecondary,
         tabBarStyle: {
