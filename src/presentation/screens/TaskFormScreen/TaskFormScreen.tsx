@@ -161,6 +161,16 @@ export function TaskFormScreen() {
         />
       </View>
 
+      <View style={styles.section}>
+        <DateTimeField
+          label="Horário de início (opcional)"
+          value={vm.form.scheduledStartAt}
+          onChange={(iso) => vm.update('scheduledStartAt', iso)}
+          mode="datetime"
+          helperText="Você receberá uma notificação neste horário"
+        />
+      </View>
+
       {!vm.isSubtask ? (
         <>
           <View style={styles.section}>

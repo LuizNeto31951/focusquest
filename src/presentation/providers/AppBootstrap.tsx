@@ -27,6 +27,7 @@ export function AppBootstrap({ defaultUserName, children }: AppBootstrapProps) {
         const { client } = await initializeDatabase();
         const dependencies = buildAppDependencies(client);
         await dependencies.ensureCurrentUser.execute({ defaultName: defaultUserName });
+        await dependencies.notificationScheduler.requestPermissions().catch(() => false);
         if (!cancelled) setState({ status: 'ready', dependencies });
       } catch (err) {
         if (!cancelled) {

@@ -1,9 +1,6 @@
 import { NotFoundError } from '@/shared/errors';
 import type { UniqueId, ISODate } from '@/shared/types';
-import {
-  createTask,
-  type Task,
-} from '@/domain/entities';
+import { createTask, type Task } from '@/domain/entities';
 import {
   DurationMinutes,
   type Priority,
@@ -14,7 +11,11 @@ import type {
   TaskRepository,
   UserRepository,
 } from '@/domain/repositories';
-import type { Clock, IdGenerator } from '@/application/ports';
+import type {
+  Clock,
+  IdGenerator,
+  NotificationScheduler,
+} from '@/application/ports';
 
 export interface CreateTaskInput {
   userId: UniqueId;
@@ -25,6 +26,7 @@ export interface CreateTaskInput {
   priority: Priority;
   estimatedMinutes: number;
   dueDate?: ISODate;
+  scheduledStartAt?: ISODate;
   isRecurring?: boolean;
   recurrenceRule?: RecurrenceRule;
 }
@@ -34,6 +36,7 @@ export class CreateTaskUseCase {
     private readonly taskRepository: TaskRepository,
     private readonly categoryRepository: CategoryRepository,
     private readonly userRepository: UserRepository,
+    private readonly notificationScheduler: NotificationScheduler,
     private readonly clock: Clock,
     private readonly idGenerator: IdGenerator,
   ) {}
@@ -60,12 +63,14 @@ export class CreateTaskUseCase {
       priority: input.priority,
       estimatedMinutes: DurationMinutes.from(input.estimatedMinutes),
       dueDate: input.dueDate,
+      scheduledStartAt: input.scheduledStartAt,
       isRecurring: input.isRecurring,
       recurrenceRule: input.recurrenceRule,
       now: this.clock.now(),
     });
 
     await this.taskRepository.save(task);
+    await this.notificationScheduler.scheduleForTask(task);
     return task;
   }
 }

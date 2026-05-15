@@ -55,9 +55,9 @@ export class SqliteTaskRepository implements TaskRepository {
     await this.client.run(
       `INSERT INTO tasks (
         id, user_id, category_id, parent_task_id, title, description,
-        priority, estimated_minutes, due_date, completed_at,
+        priority, estimated_minutes, due_date, scheduled_start_at, completed_at,
         is_recurring, recurrence_rule, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         category_id = excluded.category_id,
         parent_task_id = excluded.parent_task_id,
@@ -66,6 +66,7 @@ export class SqliteTaskRepository implements TaskRepository {
         priority = excluded.priority,
         estimated_minutes = excluded.estimated_minutes,
         due_date = excluded.due_date,
+        scheduled_start_at = excluded.scheduled_start_at,
         completed_at = excluded.completed_at,
         is_recurring = excluded.is_recurring,
         recurrence_rule = excluded.recurrence_rule,
@@ -79,6 +80,7 @@ export class SqliteTaskRepository implements TaskRepository {
       r.priority,
       r.estimated_minutes,
       r.due_date,
+      r.scheduled_start_at,
       r.completed_at,
       r.is_recurring,
       r.recurrence_rule,

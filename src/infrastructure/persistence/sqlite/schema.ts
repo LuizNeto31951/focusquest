@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   priority TEXT NOT NULL,
   estimated_minutes INTEGER NOT NULL,
   due_date TEXT,
+  scheduled_start_at TEXT,
   completed_at TEXT,
   is_recurring INTEGER NOT NULL DEFAULT 0,
   recurrence_rule TEXT,
@@ -106,4 +107,18 @@ CREATE TABLE IF NOT EXISTS task_daily_completions (
 
 CREATE INDEX IF NOT EXISTS idx_task_daily_completions_day
   ON task_daily_completions(day);
+
+CREATE TABLE IF NOT EXISTS task_notifications (
+  task_id TEXT NOT NULL,
+  notification_id TEXT NOT NULL,
+  PRIMARY KEY (task_id, notification_id),
+  FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_task_notifications_task_id
+  ON task_notifications(task_id);
 `;
+
+export const SOFT_MIGRATIONS: readonly string[] = [
+  'ALTER TABLE tasks ADD COLUMN scheduled_start_at TEXT',
+];

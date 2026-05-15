@@ -12,6 +12,7 @@ export interface Task {
   readonly priority: Priority;
   readonly estimatedMinutes: DurationMinutes;
   readonly dueDate?: ISODate;
+  readonly scheduledStartAt?: ISODate;
   readonly completedAt?: ISODate;
   readonly isRecurring: boolean;
   readonly recurrenceRule?: RecurrenceRule;
@@ -29,6 +30,7 @@ export interface CreateTaskProps {
   priority: Priority;
   estimatedMinutes: DurationMinutes;
   dueDate?: ISODate;
+  scheduledStartAt?: ISODate;
   isRecurring?: boolean;
   recurrenceRule?: RecurrenceRule;
   now: ISODate;
@@ -56,6 +58,7 @@ export function createTask(props: CreateTaskProps): Task {
     priority: props.priority,
     estimatedMinutes: props.estimatedMinutes,
     dueDate: props.dueDate,
+    scheduledStartAt: props.scheduledStartAt,
     isRecurring: props.isRecurring ?? false,
     recurrenceRule: props.recurrenceRule,
     createdAt: props.now,

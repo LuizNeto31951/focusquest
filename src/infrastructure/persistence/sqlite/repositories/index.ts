@@ -5,3 +5,4 @@ export { SqliteAchievementRepository } from './SqliteAchievementRepository';
 export { SqliteFocusSessionRepository } from './SqliteFocusSessionRepository';
 export { SqliteXPLogRepository } from './SqliteXPLogRepository';
 export { SqliteTaskDailyCompletionRepository } from './SqliteTaskDailyCompletionRepository';
+export { SqliteTaskNotificationRepository } from './SqliteTaskNotificationRepository';

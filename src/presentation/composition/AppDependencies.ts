@@ -20,6 +20,7 @@ import type {
   ListAchievementsUseCase,
   ListXPHistoryUseCase,
 } from '@/application';
+import type { NotificationScheduler } from '@/application/ports';
 
 export interface AppDependencies {
   readonly ensureCurrentUser: EnsureCurrentUserUseCase;
@@ -47,4 +48,6 @@ export interface AppDependencies {
   readonly listAchievements: ListAchievementsUseCase;
 
   readonly listXPHistory: ListXPHistoryUseCase;
+
+  readonly notificationScheduler: NotificationScheduler;
 }

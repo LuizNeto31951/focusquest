@@ -13,6 +13,7 @@ export interface TaskRow {
   priority: string;
   estimated_minutes: number;
   due_date: string | null;
+  scheduled_start_at: string | null;
   completed_at: string | null;
   is_recurring: number;
   recurrence_rule: string | null;
@@ -32,6 +33,7 @@ export const TaskMapper = {
       priority: task.priority,
       estimated_minutes: task.estimatedMinutes,
       due_date: task.dueDate ?? null,
+      scheduled_start_at: task.scheduledStartAt ?? null,
       completed_at: task.completedAt ?? null,
       is_recurring: task.isRecurring ? 1 : 0,
       recurrence_rule: task.recurrenceRule
@@ -55,6 +57,9 @@ export const TaskMapper = {
       priority: row.priority as Priority,
       estimatedMinutes: DurationMinutes.from(row.estimated_minutes),
       dueDate: row.due_date ? ISODate.from(row.due_date) : undefined,
+      scheduledStartAt: row.scheduled_start_at
+        ? ISODate.from(row.scheduled_start_at)
+        : undefined,
       completedAt: row.completed_at ? ISODate.from(row.completed_at) : undefined,
       isRecurring: row.is_recurring === 1,
       recurrenceRule: row.recurrence_rule

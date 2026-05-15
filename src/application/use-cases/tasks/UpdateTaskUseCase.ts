@@ -10,7 +10,7 @@ import type {
   CategoryRepository,
   TaskRepository,
 } from '@/domain/repositories';
-import type { Clock } from '@/application/ports';
+import type { Clock, NotificationScheduler } from '@/application/ports';
 
 export interface UpdateTaskInput {
   id: UniqueId;
@@ -20,6 +20,7 @@ export interface UpdateTaskInput {
   priority?: Priority;
   estimatedMinutes?: number;
   dueDate?: ISODate | null;
+  scheduledStartAt?: ISODate | null;
   isRecurring?: boolean;
   recurrenceRule?: RecurrenceRule | null;
 }
@@ -28,6 +29,7 @@ export class UpdateTaskUseCase {
   constructor(
     private readonly taskRepository: TaskRepository,
     private readonly categoryRepository: CategoryRepository,
+    private readonly notificationScheduler: NotificationScheduler,
     private readonly clock: Clock,
   ) {}
 
@@ -57,7 +59,12 @@ export class UpdateTaskUseCase {
         input.estimatedMinutes !== undefined
           ? DurationMinutes.from(input.estimatedMinutes)
           : existing.estimatedMinutes,
-      dueDate: input.dueDate === null ? undefined : input.dueDate ?? existing.dueDate,
+      dueDate:
+        input.dueDate === null ? undefined : input.dueDate ?? existing.dueDate,
+      scheduledStartAt:
+        input.scheduledStartAt === null
+          ? undefined
+          : input.scheduledStartAt ?? existing.scheduledStartAt,
       isRecurring: input.isRecurring ?? existing.isRecurring,
       recurrenceRule:
         input.recurrenceRule === null
@@ -71,6 +78,7 @@ export class UpdateTaskUseCase {
     }
 
     await this.taskRepository.save(updated);
+    await this.notificationScheduler.scheduleForTask(updated);
     return updated;
   }
 }

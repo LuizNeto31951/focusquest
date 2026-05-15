@@ -29,6 +29,8 @@ import {
   SqliteFocusSessionRepository,
   SqliteXPLogRepository,
   SqliteTaskDailyCompletionRepository,
+  SqliteTaskNotificationRepository,
+  ExpoNotificationScheduler,
   SystemClock,
   UuidIdGenerator,
 } from '@/infrastructure';
@@ -42,9 +44,13 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
   const focusSessionRepository = new SqliteFocusSessionRepository(client);
   const xpLogRepository = new SqliteXPLogRepository(client);
   const dailyCompletionRepository = new SqliteTaskDailyCompletionRepository(client);
+  const taskNotificationRepository = new SqliteTaskNotificationRepository(client);
 
   const clock = new SystemClock();
   const idGenerator = new UuidIdGenerator();
+  const notificationScheduler = new ExpoNotificationScheduler(
+    taskNotificationRepository,
+  );
 
   const evaluateAchievements = new EvaluateAchievementsUseCase(
     userRepository,
@@ -72,11 +78,17 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
       taskRepository,
       categoryRepository,
       userRepository,
+      notificationScheduler,
       clock,
       idGenerator,
     ),
-    updateTask: new UpdateTaskUseCase(taskRepository, categoryRepository, clock),
-    deleteTask: new DeleteTaskUseCase(taskRepository),
+    updateTask: new UpdateTaskUseCase(
+      taskRepository,
+      categoryRepository,
+      notificationScheduler,
+      clock,
+    ),
+    deleteTask: new DeleteTaskUseCase(taskRepository, notificationScheduler),
     completeTask: new CompleteTaskUseCase(
       taskRepository,
       userRepository,
@@ -116,5 +128,7 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
     listAchievements: new ListAchievementsUseCase(achievementRepository),
 
     listXPHistory: new ListXPHistoryUseCase(xpLogRepository),
+
+    notificationScheduler,
   };
 }

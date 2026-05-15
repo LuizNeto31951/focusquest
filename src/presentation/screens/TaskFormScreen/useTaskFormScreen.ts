@@ -22,6 +22,7 @@ export interface TaskFormState {
   priority: Priority;
   estimatedMinutes: string;
   dueDate?: string;
+  scheduledStartAt?: string;
   recurrenceMode: RecurrenceMode;
   weeklyDays: readonly Weekday[];
   customIntervalDays: string;
@@ -42,6 +43,7 @@ const EMPTY: TaskFormState = {
   priority: 'MEDIUM',
   estimatedMinutes: '25',
   dueDate: undefined,
+  scheduledStartAt: undefined,
   recurrenceMode: 'NONE',
   weeklyDays: [],
   customIntervalDays: '2',
@@ -114,6 +116,7 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
         priority: t.priority,
         estimatedMinutes: String(t.estimatedMinutes),
         dueDate: t.dueDate,
+        scheduledStartAt: t.scheduledStartAt,
         recurrenceMode,
         weeklyDays,
         customIntervalDays,
@@ -160,6 +163,9 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
 
     const minutes = parseInt(form.estimatedMinutes, 10);
     const dueDate = form.dueDate ? ISODate.from(form.dueDate) : undefined;
+    const scheduledStartAt = form.scheduledStartAt
+      ? ISODate.from(form.scheduledStartAt)
+      : undefined;
 
     let isRecurring = false;
     let recurrenceRule:
@@ -188,6 +194,7 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
           priority: form.priority,
           estimatedMinutes: minutes,
           dueDate: dueDate ?? null,
+          scheduledStartAt: scheduledStartAt ?? null,
           isRecurring,
           recurrenceRule: recurrenceRule ?? null,
         });
@@ -201,6 +208,7 @@ export function useTaskFormScreen(taskId?: string, parentTaskIdParam?: string) {
           priority: form.priority,
           estimatedMinutes: minutes,
           dueDate,
+          scheduledStartAt,
           isRecurring,
           recurrenceRule,
         });

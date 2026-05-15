@@ -97,6 +97,11 @@ export function TaskDetailScreen() {
             Prazo: {new Date(task.dueDate).toLocaleString('pt-BR')}
           </Typography>
         ) : null}
+        {task.scheduledStartAt ? (
+          <Typography variant="caption" color="secondary">
+            Início: {new Date(task.scheduledStartAt).toLocaleString('pt-BR')}
+          </Typography>
+        ) : null}
         {task.isRecurring ? (
           <Typography variant="caption" color="accent">
             Tarefa recorrente

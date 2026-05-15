@@ -1,6 +1,6 @@
 import type { SqliteClient } from './SqliteClient';
 import { openSqliteClient } from './SqliteClient';
-import { SCHEMA_SQL } from './schema';
+import { SCHEMA_SQL, SOFT_MIGRATIONS } from './schema';
 import {
   SqliteCategoryRepository,
   SqliteAchievementRepository,
@@ -18,8 +18,19 @@ export async function initializeDatabase(
 ): Promise<InitializedDatabase> {
   const client = await openSqliteClient(dbName);
   await client.exec(SCHEMA_SQL);
+  await runSoftMigrations(client);
   await seedDefaultData(client);
   return { client };
+}
+
+async function runSoftMigrations(client: SqliteClient): Promise<void> {
+  for (const sql of SOFT_MIGRATIONS) {
+    try {
+      await client.exec(sql);
+    } catch {
+      // coluna/tabela já existe — ignorar
+    }
+  }
 }
 
 async function seedDefaultData(client: SqliteClient): Promise<void> {
