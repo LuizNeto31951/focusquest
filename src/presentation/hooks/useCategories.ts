@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Category } from '@/domain/entities';
 import { useAppDependencies } from '@/presentation/providers';
+import { useInvalidationStore } from '@/presentation/stores';
 
 export function useCategories() {
   const { listCategories } = useAppDependencies();
+  const categoriesVersion = useInvalidationStore((s) => s.categoriesVersion);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -23,7 +25,7 @@ export function useCategories() {
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [load, categoriesVersion]);
 
   return { categories, loading, error, refetch: load };
 }

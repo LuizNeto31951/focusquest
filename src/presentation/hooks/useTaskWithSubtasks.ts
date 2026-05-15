@@ -2,9 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import type { UniqueId } from '@/shared/types';
 import type { TaskWithSubtasks } from '@/application/use-cases/tasks';
 import { useAppDependencies } from '@/presentation/providers';
+import { useInvalidationStore } from '@/presentation/stores';
 
 export function useTaskWithSubtasks(id: UniqueId | undefined) {
   const { getTaskWithSubtasks } = useAppDependencies();
+  const tasksVersion = useInvalidationStore((s) => s.tasksVersion);
   const [data, setData] = useState<TaskWithSubtasks | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -25,7 +27,7 @@ export function useTaskWithSubtasks(id: UniqueId | undefined) {
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [load, tasksVersion]);
 
   return { data, loading, error, refetch: load };
 }

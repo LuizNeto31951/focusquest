@@ -2,9 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import type { UniqueId } from '@/shared/types';
 import type { AchievementWithStatus } from '@/application/use-cases/gamification';
 import { useAppDependencies } from '@/presentation/providers';
+import { useInvalidationStore } from '@/presentation/stores';
 
 export function useAchievements(userId: UniqueId | undefined) {
   const { listAchievements } = useAppDependencies();
+  const achievementsVersion = useInvalidationStore((s) => s.achievementsVersion);
   const [achievements, setAchievements] = useState<AchievementWithStatus[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -25,7 +27,7 @@ export function useAchievements(userId: UniqueId | undefined) {
 
   useEffect(() => {
     load();
-  }, [load]);
+  }, [load, achievementsVersion]);
 
   return { achievements, loading, error, refetch: load };
 }

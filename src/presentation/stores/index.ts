@@ -10,3 +10,4 @@ export {
   type XPAward,
   type LevelUpEvent,
 } from './feedbackStore';
+export { useInvalidationStore } from './invalidationStore';

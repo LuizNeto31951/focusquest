@@ -5,13 +5,19 @@ import type {
 } from '@/application/use-cases/tasks';
 import { LevelCalculator } from '@/domain/services';
 import { useAppDependencies } from '@/presentation/providers';
-import { useFeedbackStore, useUserStore } from '@/presentation/stores';
+import {
+  useFeedbackStore,
+  useInvalidationStore,
+  useUserStore,
+} from '@/presentation/stores';
 import { useMutation } from './useMutation';
 
 export function useCompleteTask() {
   const { completeTask } = useAppDependencies();
   const currentUser = useUserStore((s) => s.user);
   const setUser = useUserStore((s) => s.setUser);
+  const bumpTasks = useInvalidationStore((s) => s.bumpTasks);
+  const bumpAchievements = useInvalidationStore((s) => s.bumpAchievements);
   const pushXPAward = useFeedbackStore((s) => s.pushXPAward);
   const pushLevelUp = useFeedbackStore((s) => s.pushLevelUp);
   const pushAchievements = useFeedbackStore((s) => s.pushAchievements);
@@ -22,6 +28,8 @@ export function useCompleteTask() {
       const output = await completeTask.execute(input);
 
       setUser(output.user);
+      bumpTasks();
+      if (output.newlyUnlockedAchievements.length > 0) bumpAchievements();
 
       if (output.xpAwarded > 0) {
         pushXPAward({
@@ -50,6 +58,8 @@ export function useCompleteTask() {
       completeTask,
       setUser,
       currentUser,
+      bumpTasks,
+      bumpAchievements,
       pushXPAward,
       pushLevelUp,
       pushAchievements,

@@ -8,6 +8,7 @@ import { useAppDependencies } from '@/presentation/providers';
 import {
   useFeedbackStore,
   useFocusStore,
+  useInvalidationStore,
   useUserStore,
 } from '@/presentation/stores';
 import { useMutation } from './useMutation';
@@ -17,6 +18,7 @@ export function useEndFocusSession() {
   const setActiveSession = useFocusStore((s) => s.setActiveSession);
   const currentUser = useUserStore((s) => s.user);
   const setUser = useUserStore((s) => s.setUser);
+  const bumpAchievements = useInvalidationStore((s) => s.bumpAchievements);
   const pushXPAward = useFeedbackStore((s) => s.pushXPAward);
   const pushLevelUp = useFeedbackStore((s) => s.pushLevelUp);
   const pushAchievements = useFeedbackStore((s) => s.pushAchievements);
@@ -28,6 +30,7 @@ export function useEndFocusSession() {
 
       setActiveSession(null);
       setUser(output.user);
+      if (output.newlyUnlockedAchievements.length > 0) bumpAchievements();
 
       if (output.xpAwarded > 0) {
         pushXPAward({
@@ -57,6 +60,7 @@ export function useEndFocusSession() {
       setActiveSession,
       setUser,
       currentUser,
+      bumpAchievements,
       pushXPAward,
       pushLevelUp,
       pushAchievements,

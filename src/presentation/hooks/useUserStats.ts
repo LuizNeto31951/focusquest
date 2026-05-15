@@ -1,32 +1,30 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import type { UniqueId } from '@/shared/types';
-import { useAppDependencies } from '@/presentation/providers';
+import type { UserStats } from '@/application/use-cases/user';
+import { LevelCalculator } from '@/domain/services';
 import { useUserStore } from '@/presentation/stores';
 
-export function useUserStats(userId: UniqueId | undefined) {
-  const { getUserStats } = useAppDependencies();
-  const stats = useUserStore((s) => s.stats);
-  const setStats = useUserStore((s) => s.setStats);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+export function useUserStats(_userId?: UniqueId) {
+  const user = useUserStore((s) => s.user);
 
-  const load = useCallback(async () => {
-    if (!userId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await getUserStats.execute({ userId });
-      setStats(result);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, getUserStats, setStats]);
+  const stats = useMemo<UserStats | null>(() => {
+    if (!user) return null;
+    return {
+      userId: user.id,
+      name: user.name,
+      totalXP: user.totalXP,
+      level: LevelCalculator.levelFromTotalXP(user.totalXP),
+      xpRemainingToNextLevel: LevelCalculator.xpRemainingToNextLevel(user.totalXP),
+      progressInCurrentLevel: LevelCalculator.progressInCurrentLevel(user.totalXP),
+      currentStreakDays: user.streak.current,
+      longestStreakDays: user.streak.longest,
+    };
+  }, [user]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  return { stats, loading, error, refetch: load };
+  return {
+    stats,
+    loading: false,
+    error: null as Error | null,
+    refetch: async () => {},
+  };
 }

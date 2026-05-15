@@ -2,9 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Task } from '@/domain/entities';
 import type { ListTasksInput } from '@/application/use-cases/tasks';
 import { useAppDependencies } from '@/presentation/providers';
+import { useInvalidationStore } from '@/presentation/stores';
 
 export function useTasks(input: ListTasksInput) {
   const { listTasks } = useAppDependencies();
+  const tasksVersion = useInvalidationStore((s) => s.tasksVersion);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -28,7 +30,7 @@ export function useTasks(input: ListTasksInput) {
 
   useEffect(() => {
     load();
-  }, [inputKey, load]);
+  }, [inputKey, load, tasksVersion]);
 
   return { tasks, loading, error, refetch: load };
 }
