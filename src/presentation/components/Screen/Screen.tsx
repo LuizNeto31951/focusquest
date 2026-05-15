@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { View, ScrollView, SafeAreaView, StatusBar } from 'react-native';
+import { View, ScrollView, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/presentation/providers';
 import { createStyles } from './Screen.styles';
 import type { ScreenProps } from './Screen.types';
@@ -16,7 +17,7 @@ export function Screen({
   const styles = useMemo(() => createStyles(theme, padding), [theme, padding]);
 
   return (
-    <SafeAreaView style={[styles.container, style]}>
+    <SafeAreaView style={[styles.container, style]} edges={['top', 'left', 'right']}>
       <StatusBar
         barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
         backgroundColor={theme.colors.background}

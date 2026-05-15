@@ -1,4 +1,5 @@
 import React from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '@/presentation/providers';
 import { HomeScreen } from '@/presentation/screens/HomeScreen';
 
@@ -8,8 +9,10 @@ import { HomeScreen } from '@/presentation/screens/HomeScreen';
  */
 export default function App() {
   return (
-    <ThemeProvider>
-      <HomeScreen />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <HomeScreen />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
