@@ -1,0 +1,67 @@
+import type { Achievement } from '@/domain/entities';
+
+export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
+  {
+    code: 'FIRST_TASK',
+    name: 'Primeiros Passos',
+    description: 'Concluiu sua primeira tarefa',
+    iconName: 'sparkles',
+    requirement: { kind: 'FIRST_TASK' },
+  },
+  {
+    code: 'EARLY_BIRD',
+    name: 'Madrugador',
+    description: 'Concluiu uma tarefa antes das 8h',
+    iconName: 'sunrise',
+    requirement: { kind: 'EARLY_BIRD', beforeHour: 8 },
+  },
+  {
+    code: 'STREAK_7',
+    name: 'Maratonista',
+    description: 'Manteve uma sequência de 7 dias',
+    iconName: 'flame',
+    requirement: { kind: 'STREAK', days: 7 },
+  },
+  {
+    code: 'STREAK_30',
+    name: 'Inabalável',
+    description: 'Manteve uma sequência de 30 dias',
+    iconName: 'flame',
+    requirement: { kind: 'STREAK', days: 30 },
+  },
+  {
+    code: 'TASKS_100',
+    name: 'Centurião',
+    description: 'Concluiu 100 tarefas',
+    iconName: 'trophy',
+    requirement: { kind: 'TASKS_COMPLETED', count: 100 },
+  },
+  {
+    code: 'FOCUS_5_IN_DAY',
+    name: 'Foco Total',
+    description: 'Completou 5 sessões de foco em um dia',
+    iconName: 'target',
+    requirement: { kind: 'FOCUS_SESSIONS_IN_DAY', count: 5 },
+  },
+  {
+    code: 'UNINTERRUPTED_60',
+    name: 'Sem Distração',
+    description: 'Permaneceu 60 minutos em modo foco sem interrupção',
+    iconName: 'shield-check',
+    requirement: { kind: 'UNINTERRUPTED_FOCUS_MINUTES', minutes: 60 },
+  },
+  {
+    code: 'LEVEL_5',
+    name: 'Em Ascensão',
+    description: 'Atingiu o nível 5',
+    iconName: 'star',
+    requirement: { kind: 'LEVEL_REACHED', level: 5 },
+  },
+  {
+    code: 'LEVEL_10',
+    name: 'Veterano',
+    description: 'Atingiu o nível 10',
+    iconName: 'medal',
+    requirement: { kind: 'LEVEL_REACHED', level: 10 },
+  },
+];
