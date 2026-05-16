@@ -41,6 +41,9 @@ export const createStyles = (theme: Theme) =>
     sectionHeader: {
       marginBottom: theme.spacing.md,
     },
+    sortRow: {
+      marginBottom: theme.spacing.md,
+    },
     list: {
       gap: theme.spacing.sm,
     },

@@ -125,6 +125,9 @@ export function TaskDetailScreen() {
               <TaskCard
                 key={sub.id}
                 task={sub}
+                onPress={() =>
+                  navigation.navigate('TaskDetail', { taskId: sub.id })
+                }
                 onToggleComplete={() => handleCompleteSubtask(sub.id)}
               />
             ))}
@@ -142,15 +145,17 @@ export function TaskDetailScreen() {
             onPress={handleComplete}
           />
         ) : null}
-        <Button
-          label="Adicionar subtarefa"
-          variant="secondary"
-          fullWidth
-          disabled={vm.completing || vm.deleting}
-          onPress={() =>
-            navigation.navigate('TaskForm', { parentTaskId: task.id })
-          }
-        />
+        {task.parentTaskId ? null : (
+          <Button
+            label="Adicionar subtarefa"
+            variant="secondary"
+            fullWidth
+            disabled={vm.completing || vm.deleting}
+            onPress={() =>
+              navigation.navigate('TaskForm', { parentTaskId: task.id })
+            }
+          />
+        )}
         <Button
           label="Editar"
           variant="secondary"

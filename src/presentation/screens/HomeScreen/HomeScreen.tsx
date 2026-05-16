@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Alert, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -10,10 +10,13 @@ import {
   XPBar,
   Avatar,
   CoinBadge,
+  SortDropdown,
   StreakIndicator,
   TaskCard,
   EmptyState,
+  type SortOption,
 } from '@/presentation/components';
+import { priorityOrder } from '@/domain/value-objects';
 import { useTheme } from '@/presentation/providers';
 import { useCategories, useCompleteTask } from '@/presentation/hooks';
 import type { RootTabParamList } from '@/presentation/navigation/types';
@@ -32,6 +35,13 @@ export function HomeScreen() {
   const categoryById = useMemo(
     () => new Map(categories.map((c) => [c.id, c])),
     [categories],
+  );
+
+  const [sortKey, setSortKey] = useState<SortKey>('dueDate');
+
+  const sortedTasks = useMemo(
+    () => sortTasks(pendingTasksToday, sortKey, categoryById),
+    [pendingTasksToday, sortKey, categoryById],
   );
 
   return (
@@ -104,8 +114,17 @@ export function HomeScreen() {
           description="Crie uma tarefa pela aba Tarefas."
         />
       ) : (
-        <View style={styles.list}>
-          {pendingTasksToday.map((entry) => (
+        <>
+          <View style={styles.sortRow}>
+            <SortDropdown
+              label="Ordenar por"
+              value={sortKey}
+              options={SORT_OPTIONS}
+              onChange={setSortKey}
+            />
+          </View>
+          <View style={styles.list}>
+            {sortedTasks.map((entry) => (
             <TaskCard
               key={entry.task.id}
               task={entry.task}
@@ -124,9 +143,52 @@ export function HomeScreen() {
                 }
               }}
             />
-          ))}
-        </View>
+            ))}
+          </View>
+        </>
       )}
     </Screen>
   );
+}
+
+type SortKey = 'dueDate' | 'priority' | 'category';
+
+const SORT_OPTIONS: readonly SortOption<SortKey>[] = [
+  { value: 'dueDate', label: 'Prazo' },
+  { value: 'priority', label: 'Prioridade' },
+  { value: 'category', label: 'Categoria' },
+];
+
+function sortTasks<T extends { task: { dueDate?: string; priority: 'LOW' | 'MEDIUM' | 'HIGH'; categoryId: string; title: string } }>(
+  tasks: readonly T[],
+  key: SortKey,
+  categoryById: Map<string, { name: string }>,
+): T[] {
+  const copy = [...tasks];
+  switch (key) {
+    case 'dueDate':
+      copy.sort((a, b) => {
+        const aTime = a.task.dueDate ? new Date(a.task.dueDate).getTime() : Infinity;
+        const bTime = b.task.dueDate ? new Date(b.task.dueDate).getTime() : Infinity;
+        if (aTime !== bTime) return aTime - bTime;
+        return a.task.title.localeCompare(b.task.title);
+      });
+      return copy;
+    case 'priority':
+      copy.sort((a, b) => {
+        const diff = priorityOrder(b.task.priority) - priorityOrder(a.task.priority);
+        if (diff !== 0) return diff;
+        return a.task.title.localeCompare(b.task.title);
+      });
+      return copy;
+    case 'category':
+      copy.sort((a, b) => {
+        const aName = categoryById.get(a.task.categoryId)?.name ?? '';
+        const bName = categoryById.get(b.task.categoryId)?.name ?? '';
+        const diff = aName.localeCompare(bName);
+        if (diff !== 0) return diff;
+        return a.task.title.localeCompare(b.task.title);
+      });
+      return copy;
+  }
 }

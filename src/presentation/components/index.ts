@@ -24,3 +24,4 @@ export * from './Avatar';
 export * from './AppIcons';
 export * from './CoinBadge';
 export * from './RewardCard';
+export * from './SortDropdown';

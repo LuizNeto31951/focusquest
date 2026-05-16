@@ -17,7 +17,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     iconName: 'sunrise',
     requirement: { kind: 'EARLY_BIRD', beforeHour: 8 },
     isCustom: false,
-    coinReward: 25,
+    coinReward: 15,
   },
   {
     code: 'STREAK_7',
@@ -26,7 +26,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     iconName: 'flame',
     requirement: { kind: 'STREAK', days: 7 },
     isCustom: false,
-    coinReward: 50,
+    coinReward: 20,
   },
   {
     code: 'STREAK_30',
@@ -35,7 +35,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     iconName: 'flame',
     requirement: { kind: 'STREAK', days: 30 },
     isCustom: false,
-    coinReward: 150,
+    coinReward: 30,
   },
   {
     code: 'TASKS_100',
@@ -44,7 +44,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     iconName: 'trophy',
     requirement: { kind: 'TASKS_COMPLETED', count: 100 },
     isCustom: false,
-    coinReward: 100,
+    coinReward: 30,
   },
   {
     code: 'FOCUS_5_IN_DAY',
@@ -53,7 +53,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     iconName: 'target',
     requirement: { kind: 'FOCUS_SESSIONS_IN_DAY', count: 5 },
     isCustom: false,
-    coinReward: 40,
+    coinReward: 20,
   },
   {
     code: 'UNINTERRUPTED_60',
@@ -62,7 +62,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     iconName: 'shield-check',
     requirement: { kind: 'UNINTERRUPTED_FOCUS_MINUTES', minutes: 60 },
     isCustom: false,
-    coinReward: 60,
+    coinReward: 20,
   },
   {
     code: 'LEVEL_5',
@@ -71,7 +71,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     iconName: 'star',
     requirement: { kind: 'LEVEL_REACHED', level: 5 },
     isCustom: false,
-    coinReward: 75,
+    coinReward: 15,
   },
   {
     code: 'LEVEL_10',
@@ -80,6 +80,6 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     iconName: 'medal',
     requirement: { kind: 'LEVEL_REACHED', level: 10 },
     isCustom: false,
-    coinReward: 200,
+    coinReward: 30,
   },
 ];
