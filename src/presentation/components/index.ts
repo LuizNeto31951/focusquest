@@ -21,3 +21,4 @@ export * from './GamificationFeedback';
 export * from './WeeklyChart';
 export * from './ActivityCalendar';
 export * from './Avatar';
+export * from './AppIcons';

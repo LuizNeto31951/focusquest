@@ -17,3 +17,6 @@ export { useSkipDay } from './useSkipDay';
 export { useWeeklyStats } from './useWeeklyStats';
 export { useActivityCalendar } from './useActivityCalendar';
 export { useUpdateUserProfile } from './useUpdateUserProfile';
+export { useCreateCategory } from './useCreateCategory';
+export { useUpdateCategory } from './useUpdateCategory';
+export { useDeleteCategory } from './useDeleteCategory';

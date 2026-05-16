@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ProfileScreen } from '@/presentation/screens/ProfileScreen';
 import { SettingsScreen } from '@/presentation/screens/SettingsScreen';
 import { EditProfileScreen } from '@/presentation/screens/EditProfileScreen';
+import { CategoriesScreen } from '@/presentation/screens/CategoriesScreen';
+import { CategoryEditorScreen } from '@/presentation/screens/CategoryEditorScreen';
 import { useTheme } from '@/presentation/providers';
 import type { ProfileStackParamList } from './types';
 
@@ -35,6 +37,16 @@ export function ProfileStack() {
         name="EditProfile"
         component={EditProfileScreen}
         options={{ title: 'Editar perfil' }}
+      />
+      <Stack.Screen
+        name="Categories"
+        component={CategoriesScreen}
+        options={{ title: 'Categorias' }}
+      />
+      <Stack.Screen
+        name="CategoryEditor"
+        component={CategoryEditorScreen}
+        options={{ title: 'Categoria' }}
       />
     </Stack.Navigator>
   );

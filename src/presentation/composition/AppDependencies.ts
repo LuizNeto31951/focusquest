@@ -5,7 +5,7 @@ import type {
   UpdateUserProfileUseCase,
   ListCategoriesUseCase,
   CreateCategoryUseCase,
-  RenameCategoryUseCase,
+  UpdateCategoryUseCase,
   DeleteCategoryUseCase,
   CreateTaskUseCase,
   UpdateTaskUseCase,
@@ -33,7 +33,7 @@ export interface AppDependencies {
 
   readonly listCategories: ListCategoriesUseCase;
   readonly createCategory: CreateCategoryUseCase;
-  readonly renameCategory: RenameCategoryUseCase;
+  readonly updateCategory: UpdateCategoryUseCase;
   readonly deleteCategory: DeleteCategoryUseCase;
 
   readonly createTask: CreateTaskUseCase;

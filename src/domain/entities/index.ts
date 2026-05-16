@@ -1,8 +1,9 @@
 export {
   type Category,
   type CreateCategoryProps,
+  type UpdateCategoryProps,
   createCategory,
-  renameCategory,
+  updateCategory,
 } from './Category';
 
 export {

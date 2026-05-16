@@ -15,6 +15,8 @@ export type ProfileStackParamList = {
   ProfileHome: undefined;
   Settings: undefined;
   EditProfile: undefined;
+  Categories: undefined;
+  CategoryEditor: { categoryId?: string };
 };
 
 export type RootTabParamList = {

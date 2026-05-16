@@ -1,21 +1,26 @@
 import { NotFoundError } from '@/shared/errors';
 import type { UniqueId } from '@/shared/types';
-import { renameCategory, type Category } from '@/domain/entities';
+import { updateCategory, type Category } from '@/domain/entities';
 import type { CategoryRepository } from '@/domain/repositories';
 
-export interface RenameCategoryInput {
+export interface UpdateCategoryInput {
   id: UniqueId;
-  newName: string;
+  name?: string;
+  color?: string;
+  icon?: string;
 }
 
-export class RenameCategoryUseCase {
+export class UpdateCategoryUseCase {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  async execute(input: RenameCategoryInput): Promise<Category> {
+  async execute(input: UpdateCategoryInput): Promise<Category> {
     const existing = await this.categoryRepository.findById(input.id);
     if (!existing) throw new NotFoundError('Category', input.id);
-
-    const updated = renameCategory(existing, input.newName);
+    const updated = updateCategory(existing, {
+      name: input.name,
+      color: input.color,
+      icon: input.icon,
+    });
     await this.categoryRepository.save(updated);
     return updated;
   }

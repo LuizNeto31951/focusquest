@@ -31,13 +31,28 @@ export function createCategory(props: CreateCategoryProps): Category {
   };
 }
 
-export function renameCategory(category: Category, newName: string): Category {
-  if (category.isDefault) {
-    throw new ValidationError('Default categories cannot be renamed');
+export interface UpdateCategoryProps {
+  name?: string;
+  color?: string;
+  icon?: string;
+}
+
+export function updateCategory(
+  category: Category,
+  props: UpdateCategoryProps,
+): Category {
+  let name = category.name;
+  if (props.name !== undefined) {
+    const trimmed = props.name.trim();
+    if (trimmed.length === 0) {
+      throw new ValidationError('Category name cannot be empty');
+    }
+    name = trimmed;
   }
-  const name = newName.trim();
-  if (name.length === 0) {
-    throw new ValidationError('Category name cannot be empty');
-  }
-  return { ...category, name };
+  return {
+    ...category,
+    name,
+    color: props.color ?? category.color,
+    icon: props.icon ?? category.icon,
+  };
 }

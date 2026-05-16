@@ -5,7 +5,7 @@ import {
   UpdateUserProfileUseCase,
   ListCategoriesUseCase,
   CreateCategoryUseCase,
-  RenameCategoryUseCase,
+  UpdateCategoryUseCase,
   DeleteCategoryUseCase,
   CreateTaskUseCase,
   UpdateTaskUseCase,
@@ -75,7 +75,7 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
 
     listCategories: new ListCategoriesUseCase(categoryRepository),
     createCategory: new CreateCategoryUseCase(categoryRepository, idGenerator),
-    renameCategory: new RenameCategoryUseCase(categoryRepository),
+    updateCategory: new UpdateCategoryUseCase(categoryRepository),
     deleteCategory: new DeleteCategoryUseCase(categoryRepository),
 
     createTask: new CreateTaskUseCase(

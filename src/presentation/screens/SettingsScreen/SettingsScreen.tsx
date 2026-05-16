@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 import { Pressable, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen, Typography, Button } from '@/presentation/components';
 import { useTheme } from '@/presentation/providers';
 import {
@@ -8,6 +10,7 @@ import {
   type AccentPreset,
   type Density,
 } from '@/presentation/theme';
+import type { ProfileStackParamList } from '@/presentation/navigation/types';
 import { useSettingsScreen } from './useSettingsScreen';
 import { createStyles } from './SettingsScreen.styles';
 
@@ -22,10 +25,21 @@ const DENSITY_LABELS: Record<Density, string> = {
 export function SettingsScreen() {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProfileStackParamList>>();
   const vm = useSettingsScreen();
 
   return (
     <Screen scroll>
+      <View style={styles.section}>
+        <Typography variant="h3">Personalização</Typography>
+        <Button
+          label="Categorias"
+          variant="secondary"
+          onPress={() => navigation.navigate('Categories')}
+        />
+      </View>
+
       <View style={styles.section}>
         <Typography variant="h3">Tema</Typography>
         <Button

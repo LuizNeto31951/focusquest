@@ -4,9 +4,9 @@ export {
   type CreateCategoryInput,
 } from './CreateCategoryUseCase';
 export {
-  RenameCategoryUseCase,
-  type RenameCategoryInput,
-} from './RenameCategoryUseCase';
+  UpdateCategoryUseCase,
+  type UpdateCategoryInput,
+} from './UpdateCategoryUseCase';
 export {
   DeleteCategoryUseCase,
   type DeleteCategoryInput,
