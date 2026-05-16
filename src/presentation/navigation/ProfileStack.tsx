@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ProfileScreen } from '@/presentation/screens/ProfileScreen';
 import { SettingsScreen } from '@/presentation/screens/SettingsScreen';
+import { EditProfileScreen } from '@/presentation/screens/EditProfileScreen';
 import { useTheme } from '@/presentation/providers';
 import type { ProfileStackParamList } from './types';
 
@@ -29,6 +30,11 @@ export function ProfileStack() {
         name="Settings"
         component={SettingsScreen}
         options={{ title: 'Configurações' }}
+      />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{ title: 'Editar perfil' }}
       />
     </Stack.Navigator>
   );

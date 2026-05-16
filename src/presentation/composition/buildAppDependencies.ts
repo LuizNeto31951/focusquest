@@ -2,6 +2,7 @@ import {
   EnsureCurrentUserUseCase,
   GetUserStatsUseCase,
   SkipDayUseCase,
+  UpdateUserProfileUseCase,
   ListCategoriesUseCase,
   CreateCategoryUseCase,
   RenameCategoryUseCase,
@@ -70,6 +71,7 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
     ),
     getUserStats: new GetUserStatsUseCase(userRepository),
     skipDay: new SkipDayUseCase(userRepository, clock),
+    updateUserProfile: new UpdateUserProfileUseCase(userRepository, clock),
 
     listCategories: new ListCategoriesUseCase(categoryRepository),
     createCategory: new CreateCategoryUseCase(categoryRepository, idGenerator),

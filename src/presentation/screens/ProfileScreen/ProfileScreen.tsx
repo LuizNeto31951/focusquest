@@ -12,6 +12,7 @@ import {
   StreakIndicator,
   WeeklyChart,
   ActivityCalendar,
+  Avatar,
   Icon,
   type WeeklyChartDataPoint,
 } from '@/presentation/components';
@@ -86,6 +87,18 @@ export function ProfileScreen() {
   return (
     <Screen scroll>
       <View style={styles.headerRow}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Editar perfil"
+          onPress={() => navigation.navigate('EditProfile')}
+          hitSlop={8}
+        >
+          <Avatar
+            name={vm.user?.name ?? 'Você'}
+            uri={vm.user?.avatarUri}
+            size={64}
+          />
+        </Pressable>
         <View style={styles.headerLeft}>
           <Typography variant="h2">{vm.user?.name ?? 'Perfil'}</Typography>
           {vm.stats ? (

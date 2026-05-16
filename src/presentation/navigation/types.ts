@@ -14,6 +14,7 @@ export type FocusStackParamList = {
 export type ProfileStackParamList = {
   ProfileHome: undefined;
   Settings: undefined;
+  EditProfile: undefined;
 };
 
 export type RootTabParamList = {

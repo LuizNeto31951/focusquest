@@ -26,12 +26,13 @@ export class SqliteUserRepository implements UserRepository {
     const r = UserMapper.toRow(user);
     await this.client.run(
       `INSERT INTO users (
-        id, name, total_xp,
+        id, name, avatar_uri, total_xp,
         streak_current, streak_longest, streak_last_active_date,
         created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         name = excluded.name,
+        avatar_uri = excluded.avatar_uri,
         total_xp = excluded.total_xp,
         streak_current = excluded.streak_current,
         streak_longest = excluded.streak_longest,
@@ -39,6 +40,7 @@ export class SqliteUserRepository implements UserRepository {
         updated_at = excluded.updated_at`,
       r.id,
       r.name,
+      r.avatar_uri,
       r.total_xp,
       r.streak_current,
       r.streak_longest,

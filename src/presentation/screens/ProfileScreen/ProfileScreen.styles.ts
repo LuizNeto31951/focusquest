@@ -10,7 +10,7 @@ export function createStyles(theme: Theme) {
     headerRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      gap: theme.spacing.md,
       marginBottom: theme.spacing.xl,
     },
     headerLeft: {

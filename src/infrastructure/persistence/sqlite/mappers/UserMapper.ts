@@ -6,6 +6,7 @@ import type { Streak } from '@/domain/value-objects';
 export interface UserRow {
   id: string;
   name: string;
+  avatar_uri: string | null;
   total_xp: number;
   streak_current: number;
   streak_longest: number;
@@ -19,6 +20,7 @@ export const UserMapper = {
     return {
       id: user.id,
       name: user.name,
+      avatar_uri: user.avatarUri ?? null,
       total_xp: user.totalXP,
       streak_current: user.streak.current,
       streak_longest: user.streak.longest,
@@ -40,6 +42,7 @@ export const UserMapper = {
     return {
       id: UniqueId.from(row.id),
       name: row.name,
+      avatarUri: row.avatar_uri ?? undefined,
       totalXP: XP.from(row.total_xp),
       streak,
       createdAt: ISODate.from(row.created_at),

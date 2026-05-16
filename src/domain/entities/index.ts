@@ -22,6 +22,7 @@ export {
   type CreateUserProps,
   createUser,
   renameUser,
+  setAvatar,
   awardXP,
   setStreak,
 } from './User';

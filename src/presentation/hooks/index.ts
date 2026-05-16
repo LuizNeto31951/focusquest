@@ -16,3 +16,4 @@ export { useEndFocusSession } from './useEndFocusSession';
 export { useSkipDay } from './useSkipDay';
 export { useWeeklyStats } from './useWeeklyStats';
 export { useActivityCalendar } from './useActivityCalendar';
+export { useUpdateUserProfile } from './useUpdateUserProfile';

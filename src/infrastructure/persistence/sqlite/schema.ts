@@ -5,6 +5,7 @@ PRAGMA journal_mode = WAL;
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
+  avatar_uri TEXT,
   total_xp INTEGER NOT NULL DEFAULT 0,
   streak_current INTEGER NOT NULL DEFAULT 0,
   streak_longest INTEGER NOT NULL DEFAULT 0,
@@ -121,4 +122,5 @@ CREATE INDEX IF NOT EXISTS idx_task_notifications_task_id
 
 export const SOFT_MIGRATIONS: readonly string[] = [
   'ALTER TABLE tasks ADD COLUMN scheduled_start_at TEXT',
+  'ALTER TABLE users ADD COLUMN avatar_uri TEXT',
 ];

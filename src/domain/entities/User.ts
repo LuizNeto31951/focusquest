@@ -5,6 +5,7 @@ import { XP, Streak } from '@/domain/value-objects';
 export interface User {
   readonly id: UniqueId;
   readonly name: string;
+  readonly avatarUri?: string;
   readonly totalXP: XP;
   readonly streak: Streak;
   readonly createdAt: ISODate;
@@ -38,6 +39,14 @@ export function renameUser(user: User, newName: string, now: ISODate): User {
     throw new ValidationError('User name cannot be empty');
   }
   return { ...user, name, updatedAt: now };
+}
+
+export function setAvatar(
+  user: User,
+  avatarUri: string | undefined,
+  now: ISODate,
+): User {
+  return { ...user, avatarUri, updatedAt: now };
 }
 
 export function awardXP(user: User, amount: XP, now: ISODate): User {
