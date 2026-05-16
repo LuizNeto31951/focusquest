@@ -11,6 +11,7 @@ export interface UserRow {
   streak_current: number;
   streak_longest: number;
   streak_last_active_date: string | null;
+  coins: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -25,6 +26,7 @@ export const UserMapper = {
       streak_current: user.streak.current,
       streak_longest: user.streak.longest,
       streak_last_active_date: user.streak.lastActiveDate ?? null,
+      coins: user.coins,
       created_at: user.createdAt,
       updated_at: user.updatedAt,
     };
@@ -45,6 +47,7 @@ export const UserMapper = {
       avatarUri: row.avatar_uri ?? undefined,
       totalXP: XP.from(row.total_xp),
       streak,
+      coins: Math.max(0, Math.floor(row.coins ?? 0)),
       createdAt: ISODate.from(row.created_at),
       updatedAt: ISODate.from(row.updated_at),
     };

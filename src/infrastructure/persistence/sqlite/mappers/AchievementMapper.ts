@@ -7,6 +7,7 @@ export interface AchievementRow {
   icon_name: string;
   requirement: string;
   is_custom: number;
+  coin_reward: number | null;
 }
 
 export const AchievementMapper = {
@@ -18,6 +19,7 @@ export const AchievementMapper = {
       icon_name: achievement.iconName,
       requirement: JSON.stringify(achievement.requirement),
       is_custom: achievement.isCustom ? 1 : 0,
+      coin_reward: achievement.coinReward,
     };
   },
 
@@ -29,6 +31,7 @@ export const AchievementMapper = {
       iconName: row.icon_name,
       requirement: JSON.parse(row.requirement) as AchievementRequirement,
       isCustom: row.is_custom === 1,
+      coinReward: Math.max(0, Math.floor(row.coin_reward ?? 0)),
     };
   },
 };

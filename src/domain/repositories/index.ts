@@ -9,3 +9,5 @@ export type {
   TaskNotificationRepository,
   TaskNotificationLink,
 } from './TaskNotificationRepository';
+export type { RewardRepository } from './RewardRepository';
+export type { RewardRedemptionRepository } from './RewardRedemptionRepository';

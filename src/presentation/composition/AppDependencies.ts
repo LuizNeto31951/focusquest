@@ -24,6 +24,13 @@ import type {
   ListXPHistoryUseCase,
   GetWeeklyStatsUseCase,
   GetActivityCalendarUseCase,
+  ListRewardsUseCase,
+  CreateRewardUseCase,
+  UpdateRewardUseCase,
+  DeleteRewardUseCase,
+  RedeemRewardUseCase,
+  ListRedemptionsUseCase,
+  GetShopStatsUseCase,
 } from '@/application';
 import type { NotificationScheduler } from '@/application/ports';
 
@@ -58,6 +65,14 @@ export interface AppDependencies {
   readonly listXPHistory: ListXPHistoryUseCase;
   readonly getWeeklyStats: GetWeeklyStatsUseCase;
   readonly getActivityCalendar: GetActivityCalendarUseCase;
+
+  readonly listRewards: ListRewardsUseCase;
+  readonly createReward: CreateRewardUseCase;
+  readonly updateReward: UpdateRewardUseCase;
+  readonly deleteReward: DeleteRewardUseCase;
+  readonly redeemReward: RedeemRewardUseCase;
+  readonly listRedemptions: ListRedemptionsUseCase;
+  readonly getShopStats: GetShopStatsUseCase;
 
   readonly notificationScheduler: NotificationScheduler;
 }

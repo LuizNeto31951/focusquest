@@ -1,0 +1,1 @@
+export { RewardsShopScreen } from './RewardsShopScreen';

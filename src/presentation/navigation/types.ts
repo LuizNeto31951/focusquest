@@ -24,10 +24,17 @@ export type AchievementsStackParamList = {
   AchievementEditor: undefined;
 };
 
+export type ShopStackParamList = {
+  RewardsShop: undefined;
+  RewardEditor: { rewardId?: string };
+  Redemptions: undefined;
+};
+
 export type RootTabParamList = {
   Home: undefined;
   Tasks: NavigatorScreenParams<TasksStackParamList>;
   Focus: NavigatorScreenParams<FocusStackParamList>;
+  Shop: NavigatorScreenParams<ShopStackParamList>;
   Achievements: NavigatorScreenParams<AchievementsStackParamList>;
   Profile: NavigatorScreenParams<ProfileStackParamList>;
 };

@@ -5,4 +5,5 @@ export type {
   FocusStackParamList,
   ProfileStackParamList,
   AchievementsStackParamList,
+  ShopStackParamList,
 } from './types';

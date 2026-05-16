@@ -3,7 +3,9 @@ import type { UniqueId } from '@/shared/types';
 import {
   awardXP,
   createXPLog,
+  earnCoins,
   endFocusSession,
+  focusSessionDurationMinutes,
   isFocusSessionActive,
   type Achievement,
   type FocusSession,
@@ -18,6 +20,7 @@ import type {
 import { XPCalculator } from '@/domain/services';
 import type { Clock, IdGenerator } from '@/application/ports';
 import type { EvaluateAchievementsUseCase } from '@/application/use-cases/gamification';
+import { CoinRewardCalculator } from '@/application/use-cases/shop';
 
 export interface EndFocusSessionInput {
   sessionId: UniqueId;
@@ -28,6 +31,7 @@ export interface EndFocusSessionOutput {
   readonly session: FocusSession;
   readonly user: User;
   readonly xpAwarded: XP;
+  readonly coinsAwarded: number;
   readonly newlyUnlockedAchievements: Achievement[];
 }
 
@@ -58,11 +62,21 @@ export class EndFocusSessionUseCase {
       ? XP.zero()
       : XPCalculator.forCompletedFocusSession();
 
-    const updatedUser = xpAwarded > 0 ? awardXP(user, xpAwarded, now) : user;
+    const durationMinutes = focusSessionDurationMinutes(ended, now);
+    const coinsAwarded = input.wasInterrupted
+      ? 0
+      : CoinRewardCalculator.forFocusSession(durationMinutes);
+
+    let updatedUser = user;
+    if (xpAwarded > 0) updatedUser = awardXP(updatedUser, xpAwarded, now);
+    if (coinsAwarded > 0)
+      updatedUser = earnCoins(updatedUser, coinsAwarded, now);
 
     await this.focusSessionRepository.save(ended);
-    if (xpAwarded > 0) {
+    if (xpAwarded > 0 || coinsAwarded > 0) {
       await this.userRepository.save(updatedUser);
+    }
+    if (xpAwarded > 0) {
       await this.xpLogRepository.save(
         createXPLog({
           id: this.idGenerator.next(),
@@ -83,6 +97,7 @@ export class EndFocusSessionUseCase {
       session: ended,
       user: updatedUser,
       xpAwarded,
+      coinsAwarded,
       newlyUnlockedAchievements,
     };
   }

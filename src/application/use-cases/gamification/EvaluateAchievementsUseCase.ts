@@ -1,6 +1,10 @@
 import { NotFoundError } from '@/shared/errors';
 import type { UniqueId, ISODate } from '@/shared/types';
-import { unlockAchievement, type Achievement } from '@/domain/entities';
+import {
+  earnCoins,
+  unlockAchievement,
+  type Achievement,
+} from '@/domain/entities';
 import type {
   AchievementRepository,
   FocusSessionRepository,
@@ -53,6 +57,17 @@ export class EvaluateAchievementsUseCase {
       await this.achievementRepository.saveUnlock(
         unlockAchievement(user.id, achievement.code, now),
       );
+    }
+
+    const totalCoinReward = newlyUnlocked.reduce(
+      (sum, a) => sum + (a.coinReward ?? 0),
+      0,
+    );
+    if (totalCoinReward > 0) {
+      const fresh = await this.userRepository.findById(user.id);
+      if (fresh) {
+        await this.userRepository.save(earnCoins(fresh, totalCoinReward, now));
+      }
     }
 
     return newlyUnlocked;

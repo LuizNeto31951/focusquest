@@ -5,3 +5,4 @@ export * from './focus';
 export * from './gamification';
 export * from './xp';
 export * from './stats';
+export * from './shop';

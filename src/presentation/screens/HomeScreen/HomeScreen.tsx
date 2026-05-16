@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
-import { View, Alert } from 'react-native';
+import { View, Alert, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { ListChecks } from 'lucide-react-native';
 import {
   Screen,
@@ -7,18 +9,22 @@ import {
   Card,
   XPBar,
   Avatar,
+  CoinBadge,
   StreakIndicator,
   TaskCard,
   EmptyState,
 } from '@/presentation/components';
 import { useTheme } from '@/presentation/providers';
 import { useCategories, useCompleteTask } from '@/presentation/hooks';
+import type { RootTabParamList } from '@/presentation/navigation/types';
 import { useHomeScreen } from './useHomeScreen';
 import { createStyles } from './HomeScreen.styles';
 
 export function HomeScreen() {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const navigation =
+    useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const { user, stats, pendingTasksToday, refetchTasks } = useHomeScreen();
   const { categories } = useCategories();
   const completeTask = useCompleteTask();
@@ -55,6 +61,14 @@ export function HomeScreen() {
             <StreakIndicator days={stats.currentStreakDays} />
           ) : null}
         </View>
+        <Pressable
+          onPress={() => navigation.navigate('Shop', { screen: 'RewardsShop' })}
+          accessibilityRole="button"
+          accessibilityLabel="Abrir lojinha"
+          hitSlop={8}
+        >
+          <CoinBadge amount={user?.coins ?? 0} size="md" variant="solid" />
+        </Pressable>
       </View>
 
       <Card style={styles.statsCard}>

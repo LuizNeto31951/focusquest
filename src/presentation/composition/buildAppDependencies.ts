@@ -24,6 +24,13 @@ import {
   ListXPHistoryUseCase,
   GetWeeklyStatsUseCase,
   GetActivityCalendarUseCase,
+  ListRewardsUseCase,
+  CreateRewardUseCase,
+  UpdateRewardUseCase,
+  DeleteRewardUseCase,
+  RedeemRewardUseCase,
+  ListRedemptionsUseCase,
+  GetShopStatsUseCase,
 } from '@/application';
 import {
   type SqliteClient,
@@ -35,6 +42,8 @@ import {
   SqliteXPLogRepository,
   SqliteTaskDailyCompletionRepository,
   SqliteTaskNotificationRepository,
+  SqliteRewardRepository,
+  SqliteRewardRedemptionRepository,
   ExpoNotificationScheduler,
   SystemClock,
   UuidIdGenerator,
@@ -50,6 +59,8 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
   const xpLogRepository = new SqliteXPLogRepository(client);
   const dailyCompletionRepository = new SqliteTaskDailyCompletionRepository(client);
   const taskNotificationRepository = new SqliteTaskNotificationRepository(client);
+  const rewardRepository = new SqliteRewardRepository(client);
+  const rewardRedemptionRepository = new SqliteRewardRedemptionRepository(client);
 
   const clock = new SystemClock();
   const idGenerator = new UuidIdGenerator();
@@ -153,6 +164,27 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
       taskRepository,
       dailyCompletionRepository,
       clock,
+    ),
+
+    listRewards: new ListRewardsUseCase(rewardRepository),
+    createReward: new CreateRewardUseCase(
+      rewardRepository,
+      clock,
+      idGenerator,
+    ),
+    updateReward: new UpdateRewardUseCase(rewardRepository, clock),
+    deleteReward: new DeleteRewardUseCase(rewardRepository),
+    redeemReward: new RedeemRewardUseCase(
+      rewardRepository,
+      rewardRedemptionRepository,
+      userRepository,
+      clock,
+      idGenerator,
+    ),
+    listRedemptions: new ListRedemptionsUseCase(rewardRedemptionRepository),
+    getShopStats: new GetShopStatsUseCase(
+      userRepository,
+      rewardRedemptionRepository,
     ),
 
     notificationScheduler,

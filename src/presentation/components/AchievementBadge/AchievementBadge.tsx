@@ -5,6 +5,7 @@ import { useTheme } from '@/presentation/providers';
 import { Typography } from '@/presentation/components/Typography';
 import { Icon } from '@/presentation/components/Icon';
 import { resolveIcon } from '@/presentation/components/AppIcons';
+import { CoinBadge } from '@/presentation/components/CoinBadge';
 import type { Achievement } from '@/domain/entities';
 
 interface AchievementBadgeProps {
@@ -40,6 +41,13 @@ export function AchievementBadge({ achievement, unlocked }: AchievementBadgeProp
       >
         {achievement.description}
       </Typography>
+      {achievement.coinReward > 0 ? (
+        <CoinBadge
+          amount={achievement.coinReward}
+          size="sm"
+          variant={unlocked ? 'solid' : 'soft'}
+        />
+      ) : null}
       {achievement.isCustom ? (
         <Typography variant="caption" color="accent">
           Personalizada

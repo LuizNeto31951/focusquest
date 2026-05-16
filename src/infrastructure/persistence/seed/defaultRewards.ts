@@ -1,0 +1,67 @@
+import { ISODate, UniqueId } from '@/shared/types';
+import type { Reward } from '@/domain/entities';
+
+const SEED_DATE = ISODate.from('2024-01-01T00:00:00.000Z');
+
+export const DEFAULT_REWARDS: readonly Reward[] = [
+  {
+    id: UniqueId.from('aaaaaaaa-1111-4111-8111-aaaaaaaaaaa1'),
+    name: 'Episódio da série',
+    description: 'Assistir um episódio sem culpa',
+    iconKey: 'gamepad',
+    color: '#6366F1',
+    cost: 30,
+    category: 'Lazer',
+    isFavorite: true,
+    createdAt: SEED_DATE,
+    updatedAt: SEED_DATE,
+  },
+  {
+    id: UniqueId.from('aaaaaaaa-1111-4111-8111-aaaaaaaaaaa2'),
+    name: 'Café especial',
+    description: 'Aquele cafezinho diferente',
+    iconKey: 'coffee',
+    color: '#A16207',
+    cost: 20,
+    category: 'Comida',
+    isFavorite: false,
+    createdAt: SEED_DATE,
+    updatedAt: SEED_DATE,
+  },
+  {
+    id: UniqueId.from('aaaaaaaa-1111-4111-8111-aaaaaaaaaaa3'),
+    name: 'Hora de jogo',
+    description: '30 minutos do seu jogo favorito',
+    iconKey: 'gamepad',
+    color: '#DB2777',
+    cost: 40,
+    category: 'Lazer',
+    isFavorite: false,
+    createdAt: SEED_DATE,
+    updatedAt: SEED_DATE,
+  },
+  {
+    id: UniqueId.from('aaaaaaaa-1111-4111-8111-aaaaaaaaaaa4'),
+    name: 'Passeio rápido',
+    description: 'Uma volta no parque ou caminhada',
+    iconKey: 'sunrise',
+    color: '#16A34A',
+    cost: 25,
+    category: 'Bem-estar',
+    isFavorite: false,
+    createdAt: SEED_DATE,
+    updatedAt: SEED_DATE,
+  },
+  {
+    id: UniqueId.from('aaaaaaaa-1111-4111-8111-aaaaaaaaaaa5'),
+    name: 'Compra pequena',
+    description: 'Algo até R$ 50 que você queria',
+    iconKey: 'shopping-cart',
+    color: '#0D9488',
+    cost: 150,
+    category: 'Compras',
+    isFavorite: false,
+    createdAt: SEED_DATE,
+    updatedAt: SEED_DATE,
+  },
+];

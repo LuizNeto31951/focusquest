@@ -1,7 +1,8 @@
 import { ValidationError } from '@/shared/errors';
-import type {
-  Achievement,
-  AchievementRequirement,
+import {
+  coinRewardForRequirement,
+  type Achievement,
+  type AchievementRequirement,
 } from '@/domain/entities';
 import type { AchievementRepository } from '@/domain/repositories';
 import type { IdGenerator } from '@/application/ports';
@@ -35,6 +36,7 @@ export class CreateCustomAchievementUseCase {
       iconName: input.iconName,
       requirement: input.requirement,
       isCustom: true,
+      coinReward: coinRewardForRequirement(input.requirement),
     };
     await this.achievementRepository.save(achievement);
     return achievement;

@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   streak_current INTEGER NOT NULL DEFAULT 0,
   streak_longest INTEGER NOT NULL DEFAULT 0,
   streak_last_active_date TEXT,
+  coins INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
@@ -54,7 +55,8 @@ CREATE TABLE IF NOT EXISTS achievements (
   description TEXT NOT NULL,
   icon_name TEXT NOT NULL,
   requirement TEXT NOT NULL,
-  is_custom INTEGER NOT NULL DEFAULT 0
+  is_custom INTEGER NOT NULL DEFAULT 0,
+  coin_reward INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS user_achievements (
@@ -119,10 +121,43 @@ CREATE TABLE IF NOT EXISTS task_notifications (
 
 CREATE INDEX IF NOT EXISTS idx_task_notifications_task_id
   ON task_notifications(task_id);
+
+CREATE TABLE IF NOT EXISTS rewards (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  icon_key TEXT NOT NULL,
+  color TEXT NOT NULL,
+  image_uri TEXT,
+  cost INTEGER NOT NULL,
+  category TEXT NOT NULL DEFAULT 'Geral',
+  is_favorite INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_rewards_category ON rewards(category);
+CREATE INDEX IF NOT EXISTS idx_rewards_cost ON rewards(cost);
+
+CREATE TABLE IF NOT EXISTS reward_redemptions (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  reward_id TEXT NOT NULL,
+  reward_name TEXT NOT NULL,
+  cost INTEGER NOT NULL,
+  redeemed_at TEXT NOT NULL,
+  note TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_reward_redemptions_user_date
+  ON reward_redemptions(user_id, redeemed_at);
 `;
 
 export const SOFT_MIGRATIONS: readonly string[] = [
   'ALTER TABLE tasks ADD COLUMN scheduled_start_at TEXT',
   'ALTER TABLE users ADD COLUMN avatar_uri TEXT',
   'ALTER TABLE achievements ADD COLUMN is_custom INTEGER NOT NULL DEFAULT 0',
+  'ALTER TABLE users ADD COLUMN coins INTEGER NOT NULL DEFAULT 0',
+  'ALTER TABLE achievements ADD COLUMN coin_reward INTEGER NOT NULL DEFAULT 0',
 ];

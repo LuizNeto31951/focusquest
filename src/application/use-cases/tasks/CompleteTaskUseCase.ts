@@ -6,6 +6,7 @@ import {
   completeTask,
   createXPLog,
   dayKeyFromISODate,
+  earnCoins,
   isSubtask,
   isTaskCompleted,
   recordDailyCompletion,
@@ -28,6 +29,7 @@ import {
 } from '@/domain/services';
 import type { Clock, IdGenerator } from '@/application/ports';
 import type { EvaluateAchievementsUseCase } from '@/application/use-cases/gamification';
+import { CoinRewardCalculator } from '@/application/use-cases/shop';
 
 export interface CompleteTaskInput {
   taskId: UniqueId;
@@ -37,6 +39,7 @@ export interface CompleteTaskOutput {
   readonly task: Task;
   readonly user: User;
   readonly xpAwarded: XP;
+  readonly coinsAwarded: number;
   readonly breakdown: TaskXPBreakdown | null;
   readonly newlyUnlockedAchievements: Achievement[];
 }
@@ -96,8 +99,10 @@ export class CompleteTaskUseCase {
       currentStreakDays: updatedStreak.current,
     });
 
+    const coinsAwarded = CoinRewardCalculator.forTaskCompletion(persistedTask);
     const userAfterXP = awardXP(user, xpAwarded, now);
     const userAfterStreak = setStreak(userAfterXP, updatedStreak, now);
+    const userAfterCoins = earnCoins(userAfterStreak, coinsAwarded, now);
 
     if (task.isRecurring) {
       await this.dailyCompletionRepository.save(
@@ -106,7 +111,7 @@ export class CompleteTaskUseCase {
     } else {
       await this.taskRepository.save(persistedTask);
     }
-    await this.userRepository.save(userAfterStreak);
+    await this.userRepository.save(userAfterCoins);
 
     const newlyUnlockedAchievements = await this.evaluateAchievements.execute({
       userId: user.id,
@@ -114,8 +119,9 @@ export class CompleteTaskUseCase {
 
     return {
       task: persistedTask,
-      user: userAfterStreak,
+      user: userAfterCoins,
       xpAwarded,
+      coinsAwarded,
       breakdown,
       newlyUnlockedAchievements,
     };

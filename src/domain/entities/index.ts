@@ -26,11 +26,28 @@ export {
   setAvatar,
   awardXP,
   setStreak,
+  earnCoins,
+  spendCoins,
 } from './User';
+
+export {
+  type Reward,
+  type CreateRewardProps,
+  type UpdateRewardProps,
+  createReward,
+  updateReward,
+} from './Reward';
+
+export {
+  type RewardRedemption,
+  type CreateRewardRedemptionProps,
+  createRewardRedemption,
+} from './RewardRedemption';
 
 export {
   type Achievement,
   type AchievementRequirement,
+  coinRewardForRequirement,
 } from './Achievement';
 
 export {

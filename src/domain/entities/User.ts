@@ -8,6 +8,7 @@ export interface User {
   readonly avatarUri?: string;
   readonly totalXP: XP;
   readonly streak: Streak;
+  readonly coins: number;
   readonly createdAt: ISODate;
   readonly updatedAt: ISODate;
 }
@@ -28,6 +29,7 @@ export function createUser(props: CreateUserProps): User {
     name,
     totalXP: XP.zero(),
     streak: Streak.initial(),
+    coins: 0,
     createdAt: props.now,
     updatedAt: props.now,
   };
@@ -59,4 +61,19 @@ export function awardXP(user: User, amount: XP, now: ISODate): User {
 
 export function setStreak(user: User, streak: Streak, now: ISODate): User {
   return { ...user, streak, updatedAt: now };
+}
+
+export function earnCoins(user: User, amount: number, now: ISODate): User {
+  const safe = Math.max(0, Math.floor(amount));
+  if (safe === 0) return user;
+  return { ...user, coins: user.coins + safe, updatedAt: now };
+}
+
+export function spendCoins(user: User, amount: number, now: ISODate): User {
+  const safe = Math.max(0, Math.floor(amount));
+  if (safe === 0) return user;
+  if (user.coins < safe) {
+    throw new ValidationError('Saldo de moedas insuficiente');
+  }
+  return { ...user, coins: user.coins - safe, updatedAt: now };
 }

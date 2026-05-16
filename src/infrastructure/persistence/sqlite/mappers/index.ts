@@ -12,3 +12,8 @@ export {
   TaskDailyCompletionMapper,
   type TaskDailyCompletionRow,
 } from './TaskDailyCompletionMapper';
+export { RewardMapper, type RewardRow } from './RewardMapper';
+export {
+  RewardRedemptionMapper,
+  type RewardRedemptionRow,
+} from './RewardRedemptionMapper';

@@ -4,8 +4,13 @@ import { SCHEMA_SQL, SOFT_MIGRATIONS } from './schema';
 import {
   SqliteCategoryRepository,
   SqliteAchievementRepository,
+  SqliteRewardRepository,
 } from './repositories';
-import { DEFAULT_CATEGORIES, DEFAULT_ACHIEVEMENTS } from '../seed';
+import {
+  DEFAULT_CATEGORIES,
+  DEFAULT_ACHIEVEMENTS,
+  DEFAULT_REWARDS,
+} from '../seed';
 
 export const DATABASE_NAME = 'focusquest.db';
 
@@ -41,9 +46,14 @@ async function seedDefaultData(client: SqliteClient): Promise<void> {
 
   const achievementRepo = new SqliteAchievementRepository(client);
   for (const achievement of DEFAULT_ACHIEVEMENTS) {
-    const existing = await achievementRepo.findByCode(achievement.code);
-    if (!existing) {
-      await achievementRepo.save(achievement);
+    await achievementRepo.save(achievement);
+  }
+
+  const rewardRepo = new SqliteRewardRepository(client);
+  const existingRewards = await rewardRepo.findAll();
+  if (existingRewards.length === 0) {
+    for (const reward of DEFAULT_REWARDS) {
+      await rewardRepo.save(reward);
     }
   }
 }

@@ -1,6 +1,13 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, ListChecks, Target, Trophy, User } from 'lucide-react-native';
+import {
+  Gift,
+  Home,
+  ListChecks,
+  Target,
+  Trophy,
+  User,
+} from 'lucide-react-native';
 import { HomeScreen } from '@/presentation/screens/HomeScreen';
 import { Icon } from '@/presentation/components';
 import { useTheme } from '@/presentation/providers';
@@ -8,6 +15,7 @@ import { TasksStack } from './TasksStack';
 import { FocusStack } from './FocusStack';
 import { ProfileStack } from './ProfileStack';
 import { AchievementsStack } from './AchievementsStack';
+import { ShopStack } from './ShopStack';
 import type { RootTabParamList } from './types';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -55,6 +63,16 @@ export function RootNavigator() {
           title: 'Foco',
           tabBarIcon: ({ color, size }) => (
             <Icon name={Target} size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Shop"
+        component={ShopStack}
+        options={{
+          title: 'Lojinha',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name={Gift} size={size} color={color} />
           ),
         }}
       />

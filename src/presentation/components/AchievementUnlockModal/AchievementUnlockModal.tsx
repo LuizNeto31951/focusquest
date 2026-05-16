@@ -7,7 +7,12 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Award } from 'lucide-react-native';
-import { Button, Icon, Typography } from '@/presentation/components';
+import {
+  Button,
+  CoinBadge,
+  Icon,
+  Typography,
+} from '@/presentation/components';
 import { useTheme } from '@/presentation/providers';
 import { useFeedbackStore } from '@/presentation/stores';
 import { createStyles } from './AchievementUnlockModal.styles';
@@ -64,6 +69,13 @@ export function AchievementUnlockModal() {
         <Typography variant="body" color="secondary" align="center">
           {current.description}
         </Typography>
+        {current.coinReward > 0 ? (
+          <CoinBadge
+            amount={current.coinReward}
+            size="md"
+            variant="solid"
+          />
+        ) : null}
         {remaining > 1 ? (
           <Typography
             variant="caption"
