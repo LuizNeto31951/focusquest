@@ -2,12 +2,12 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, ListChecks, Target, Trophy, User } from 'lucide-react-native';
 import { HomeScreen } from '@/presentation/screens/HomeScreen';
-import { AchievementsScreen } from '@/presentation/screens/AchievementsScreen';
 import { Icon } from '@/presentation/components';
 import { useTheme } from '@/presentation/providers';
 import { TasksStack } from './TasksStack';
 import { FocusStack } from './FocusStack';
 import { ProfileStack } from './ProfileStack';
+import { AchievementsStack } from './AchievementsStack';
 import type { RootTabParamList } from './types';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -60,7 +60,7 @@ export function RootNavigator() {
       />
       <Tab.Screen
         name="Achievements"
-        component={AchievementsScreen}
+        component={AchievementsStack}
         options={{
           title: 'Conquistas',
           tabBarIcon: ({ color, size }) => (

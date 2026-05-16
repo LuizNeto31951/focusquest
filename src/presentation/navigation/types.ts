@@ -19,10 +19,15 @@ export type ProfileStackParamList = {
   CategoryEditor: { categoryId?: string };
 };
 
+export type AchievementsStackParamList = {
+  AchievementsList: undefined;
+  AchievementEditor: undefined;
+};
+
 export type RootTabParamList = {
   Home: undefined;
   Tasks: NavigatorScreenParams<TasksStackParamList>;
   Focus: NavigatorScreenParams<FocusStackParamList>;
-  Achievements: undefined;
+  Achievements: NavigatorScreenParams<AchievementsStackParamList>;
   Profile: NavigatorScreenParams<ProfileStackParamList>;
 };

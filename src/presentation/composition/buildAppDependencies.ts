@@ -19,6 +19,8 @@ import {
   GetActiveFocusSessionUseCase,
   EvaluateAchievementsUseCase,
   ListAchievementsUseCase,
+  CreateCustomAchievementUseCase,
+  DeleteCustomAchievementUseCase,
   ListXPHistoryUseCase,
   GetWeeklyStatsUseCase,
   GetActivityCalendarUseCase,
@@ -130,6 +132,13 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
 
     evaluateAchievements,
     listAchievements: new ListAchievementsUseCase(achievementRepository),
+    createCustomAchievement: new CreateCustomAchievementUseCase(
+      achievementRepository,
+      idGenerator,
+    ),
+    deleteCustomAchievement: new DeleteCustomAchievementUseCase(
+      achievementRepository,
+    ),
 
     listXPHistory: new ListXPHistoryUseCase(xpLogRepository),
     getWeeklyStats: new GetWeeklyStatsUseCase(

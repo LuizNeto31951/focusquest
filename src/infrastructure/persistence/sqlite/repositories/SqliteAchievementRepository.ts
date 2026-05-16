@@ -27,6 +27,30 @@ export class SqliteAchievementRepository implements AchievementRepository {
     return row ? AchievementMapper.toDomain(row) : null;
   }
 
+  async save(achievement: Achievement): Promise<void> {
+    const r = AchievementMapper.toRow(achievement);
+    await this.client.run(
+      `INSERT INTO achievements (code, name, description, icon_name, requirement, is_custom)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON CONFLICT(code) DO UPDATE SET
+         name = excluded.name,
+         description = excluded.description,
+         icon_name = excluded.icon_name,
+         requirement = excluded.requirement,
+         is_custom = excluded.is_custom`,
+      r.code,
+      r.name,
+      r.description,
+      r.icon_name,
+      r.requirement,
+      r.is_custom,
+    );
+  }
+
+  async deleteByCode(code: string): Promise<void> {
+    await this.client.run('DELETE FROM achievements WHERE code = ?', code);
+  }
+
   async findUnlockedByUser(userId: UniqueId): Promise<UserAchievement[]> {
     const rows = await this.client.getAll<UserAchievementRow>(
       'SELECT * FROM user_achievements WHERE user_id = ? ORDER BY unlocked_at DESC',

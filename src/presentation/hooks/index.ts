@@ -20,3 +20,5 @@ export { useUpdateUserProfile } from './useUpdateUserProfile';
 export { useCreateCategory } from './useCreateCategory';
 export { useUpdateCategory } from './useUpdateCategory';
 export { useDeleteCategory } from './useDeleteCategory';
+export { useCreateCustomAchievement } from './useCreateCustomAchievement';
+export { useDeleteCustomAchievement } from './useDeleteCustomAchievement';

@@ -53,7 +53,8 @@ CREATE TABLE IF NOT EXISTS achievements (
   name TEXT NOT NULL,
   description TEXT NOT NULL,
   icon_name TEXT NOT NULL,
-  requirement TEXT NOT NULL
+  requirement TEXT NOT NULL,
+  is_custom INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS user_achievements (
@@ -123,4 +124,5 @@ CREATE INDEX IF NOT EXISTS idx_task_notifications_task_id
 export const SOFT_MIGRATIONS: readonly string[] = [
   'ALTER TABLE tasks ADD COLUMN scheduled_start_at TEXT',
   'ALTER TABLE users ADD COLUMN avatar_uri TEXT',
+  'ALTER TABLE achievements ADD COLUMN is_custom INTEGER NOT NULL DEFAULT 0',
 ];

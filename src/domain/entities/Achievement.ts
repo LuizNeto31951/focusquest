@@ -13,4 +13,5 @@ export interface Achievement {
   readonly description: string;
   readonly iconName: string;
   readonly requirement: AchievementRequirement;
+  readonly isCustom: boolean;
 }

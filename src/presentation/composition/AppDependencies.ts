@@ -19,6 +19,8 @@ import type {
   GetActiveFocusSessionUseCase,
   EvaluateAchievementsUseCase,
   ListAchievementsUseCase,
+  CreateCustomAchievementUseCase,
+  DeleteCustomAchievementUseCase,
   ListXPHistoryUseCase,
   GetWeeklyStatsUseCase,
   GetActivityCalendarUseCase,
@@ -50,6 +52,8 @@ export interface AppDependencies {
 
   readonly evaluateAchievements: EvaluateAchievementsUseCase;
   readonly listAchievements: ListAchievementsUseCase;
+  readonly createCustomAchievement: CreateCustomAchievementUseCase;
+  readonly deleteCustomAchievement: DeleteCustomAchievementUseCase;
 
   readonly listXPHistory: ListXPHistoryUseCase;
   readonly getWeeklyStats: GetWeeklyStatsUseCase;

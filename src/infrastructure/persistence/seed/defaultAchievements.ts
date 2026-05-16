@@ -7,6 +7,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     description: 'Concluiu sua primeira tarefa',
     iconName: 'sparkles',
     requirement: { kind: 'FIRST_TASK' },
+    isCustom: false,
   },
   {
     code: 'EARLY_BIRD',
@@ -14,6 +15,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     description: 'Concluiu uma tarefa antes das 8h',
     iconName: 'sunrise',
     requirement: { kind: 'EARLY_BIRD', beforeHour: 8 },
+    isCustom: false,
   },
   {
     code: 'STREAK_7',
@@ -21,6 +23,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     description: 'Manteve uma sequência de 7 dias',
     iconName: 'flame',
     requirement: { kind: 'STREAK', days: 7 },
+    isCustom: false,
   },
   {
     code: 'STREAK_30',
@@ -28,6 +31,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     description: 'Manteve uma sequência de 30 dias',
     iconName: 'flame',
     requirement: { kind: 'STREAK', days: 30 },
+    isCustom: false,
   },
   {
     code: 'TASKS_100',
@@ -35,6 +39,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     description: 'Concluiu 100 tarefas',
     iconName: 'trophy',
     requirement: { kind: 'TASKS_COMPLETED', count: 100 },
+    isCustom: false,
   },
   {
     code: 'FOCUS_5_IN_DAY',
@@ -42,6 +47,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     description: 'Completou 5 sessões de foco em um dia',
     iconName: 'target',
     requirement: { kind: 'FOCUS_SESSIONS_IN_DAY', count: 5 },
+    isCustom: false,
   },
   {
     code: 'UNINTERRUPTED_60',
@@ -49,6 +55,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     description: 'Permaneceu 60 minutos em modo foco sem interrupção',
     iconName: 'shield-check',
     requirement: { kind: 'UNINTERRUPTED_FOCUS_MINUTES', minutes: 60 },
+    isCustom: false,
   },
   {
     code: 'LEVEL_5',
@@ -56,6 +63,7 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     description: 'Atingiu o nível 5',
     iconName: 'star',
     requirement: { kind: 'LEVEL_REACHED', level: 5 },
+    isCustom: false,
   },
   {
     code: 'LEVEL_10',
@@ -63,5 +71,6 @@ export const DEFAULT_ACHIEVEMENTS: readonly Achievement[] = [
     description: 'Atingiu o nível 10',
     iconName: 'medal',
     requirement: { kind: 'LEVEL_REACHED', level: 10 },
+    isCustom: false,
   },
 ];

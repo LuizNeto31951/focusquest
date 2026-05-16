@@ -43,15 +43,7 @@ async function seedDefaultData(client: SqliteClient): Promise<void> {
   for (const achievement of DEFAULT_ACHIEVEMENTS) {
     const existing = await achievementRepo.findByCode(achievement.code);
     if (!existing) {
-      await client.run(
-        `INSERT INTO achievements (code, name, description, icon_name, requirement)
-         VALUES (?, ?, ?, ?, ?)`,
-        achievement.code,
-        achievement.name,
-        achievement.description,
-        achievement.iconName,
-        JSON.stringify(achievement.requirement),
-      );
+      await achievementRepo.save(achievement);
     }
   }
 }

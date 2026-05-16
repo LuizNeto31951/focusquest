@@ -4,4 +4,5 @@ export type {
   TasksStackParamList,
   FocusStackParamList,
   ProfileStackParamList,
+  AchievementsStackParamList,
 } from './types';

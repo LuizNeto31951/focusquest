@@ -6,6 +6,7 @@ export interface AchievementRow {
   description: string;
   icon_name: string;
   requirement: string;
+  is_custom: number;
 }
 
 export const AchievementMapper = {
@@ -16,6 +17,7 @@ export const AchievementMapper = {
       description: achievement.description,
       icon_name: achievement.iconName,
       requirement: JSON.stringify(achievement.requirement),
+      is_custom: achievement.isCustom ? 1 : 0,
     };
   },
 
@@ -26,6 +28,7 @@ export const AchievementMapper = {
       description: row.description,
       iconName: row.icon_name,
       requirement: JSON.parse(row.requirement) as AchievementRequirement,
+      isCustom: row.is_custom === 1,
     };
   },
 };

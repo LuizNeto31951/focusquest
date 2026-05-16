@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Award, Lock } from 'lucide-react-native';
+import { Lock } from 'lucide-react-native';
 import { useTheme } from '@/presentation/providers';
 import { Typography } from '@/presentation/components/Typography';
 import { Icon } from '@/presentation/components/Icon';
+import { resolveIcon } from '@/presentation/components/AppIcons';
 import type { Achievement } from '@/domain/entities';
 
 interface AchievementBadgeProps {
@@ -14,12 +15,13 @@ interface AchievementBadgeProps {
 export function AchievementBadge({ achievement, unlocked }: AchievementBadgeProps) {
   const theme = useTheme();
   const styles = useMemo(() => createStyles(theme, unlocked), [theme, unlocked]);
+  const IconComp = resolveIcon(achievement.iconName);
 
   return (
     <View style={styles.container}>
       <View style={styles.iconWrapper}>
         <Icon
-          name={unlocked ? Award : Lock}
+          name={unlocked ? IconComp : Lock}
           size={28}
           color={unlocked ? theme.colors.textOnAccent : theme.colors.textDisabled}
         />
@@ -38,6 +40,11 @@ export function AchievementBadge({ achievement, unlocked }: AchievementBadgeProp
       >
         {achievement.description}
       </Typography>
+      {achievement.isCustom ? (
+        <Typography variant="caption" color="accent">
+          Personalizada
+        </Typography>
+      ) : null}
     </View>
   );
 }
