@@ -12,6 +12,23 @@ export const createStyles = (theme: Theme) =>
     headerText: {
       flex: 1,
     },
+    avatarWrapper: {
+      position: 'relative',
+    },
+    levelBadge: {
+      position: 'absolute',
+      bottom: -2,
+      right: -2,
+      minWidth: 24,
+      height: 24,
+      borderRadius: 12,
+      paddingHorizontal: 4,
+      backgroundColor: theme.colors.accent,
+      borderWidth: 2,
+      borderColor: theme.colors.background,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     statsCard: {
       gap: theme.spacing.md,
       marginBottom: theme.spacing.xl,

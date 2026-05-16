@@ -6,7 +6,7 @@ import {
   Typography,
   Card,
   XPBar,
-  LevelBadge,
+  Avatar,
   StreakIndicator,
   TaskCard,
   EmptyState,
@@ -31,7 +31,24 @@ export function HomeScreen() {
   return (
     <Screen scroll>
       <View style={styles.headerRow}>
-        <LevelBadge level={stats?.level ?? 1} />
+        <View style={styles.avatarWrapper}>
+          <Avatar
+            name={user?.name ?? 'Você'}
+            uri={user?.avatarUri}
+            size={64}
+          />
+          <View style={styles.levelBadge}>
+            <Typography
+              variant="caption"
+              style={{
+                color: theme.colors.textOnAccent,
+                fontWeight: '700',
+              }}
+            >
+              {stats?.level ?? 1}
+            </Typography>
+          </View>
+        </View>
         <View style={styles.headerText}>
           <Typography variant="h2">{user?.name ?? 'Olá'}</Typography>
           {stats ? (
