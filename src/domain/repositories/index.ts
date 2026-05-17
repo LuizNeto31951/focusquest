@@ -11,3 +11,4 @@ export type {
 } from './TaskNotificationRepository';
 export type { RewardRepository } from './RewardRepository';
 export type { RewardRedemptionRepository } from './RewardRedemptionRepository';
+export type { UserPreferencesRepository } from './UserPreferencesRepository';

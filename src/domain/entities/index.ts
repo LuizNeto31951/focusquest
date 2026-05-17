@@ -78,3 +78,11 @@ export {
   recordDailyCompletion,
   dayKeyFromISODate,
 } from './TaskDailyCompletion';
+
+export {
+  type UserPreferences,
+  type CreateUserPreferencesProps,
+  type ThemeModePreference,
+  type DensityPreference,
+  createUserPreferences,
+} from './UserPreferences';

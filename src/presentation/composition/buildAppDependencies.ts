@@ -4,6 +4,8 @@ import {
   SkipDayUseCase,
   UpdateUserProfileUseCase,
   CompleteOnboardingUseCase,
+  GetUserPreferencesUseCase,
+  SaveUserPreferencesUseCase,
   ListCategoriesUseCase,
   CreateCategoryUseCase,
   UpdateCategoryUseCase,
@@ -45,6 +47,7 @@ import {
   SqliteTaskNotificationRepository,
   SqliteRewardRepository,
   SqliteRewardRedemptionRepository,
+  SqliteUserPreferencesRepository,
   ExpoNotificationScheduler,
   SystemClock,
   UuidIdGenerator,
@@ -63,6 +66,7 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
   const taskNotificationRepository = new SqliteTaskNotificationRepository(client);
   const rewardRepository = new SqliteRewardRepository(client);
   const rewardRedemptionRepository = new SqliteRewardRedemptionRepository(client);
+  const userPreferencesRepository = new SqliteUserPreferencesRepository(client);
 
   const clock = new SystemClock();
   const idGenerator = new UuidIdGenerator();
@@ -89,6 +93,11 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
     skipDay: new SkipDayUseCase(userRepository, clock),
     updateUserProfile: new UpdateUserProfileUseCase(userRepository, clock),
     completeOnboarding: new CompleteOnboardingUseCase(userRepository, clock),
+    getUserPreferences: new GetUserPreferencesUseCase(userPreferencesRepository),
+    saveUserPreferences: new SaveUserPreferencesUseCase(
+      userPreferencesRepository,
+      clock,
+    ),
 
     listCategories: new ListCategoriesUseCase(categoryRepository),
     createCategory: new CreateCategoryUseCase(categoryRepository, idGenerator),

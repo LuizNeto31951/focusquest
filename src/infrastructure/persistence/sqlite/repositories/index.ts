@@ -8,3 +8,4 @@ export { SqliteTaskDailyCompletionRepository } from './SqliteTaskDailyCompletion
 export { SqliteTaskNotificationRepository } from './SqliteTaskNotificationRepository';
 export { SqliteRewardRepository } from './SqliteRewardRepository';
 export { SqliteRewardRedemptionRepository } from './SqliteRewardRedemptionRepository';
+export { SqliteUserPreferencesRepository } from './SqliteUserPreferencesRepository';

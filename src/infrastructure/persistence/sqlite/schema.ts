@@ -153,6 +153,17 @@ CREATE TABLE IF NOT EXISTS reward_redemptions (
 
 CREATE INDEX IF NOT EXISTS idx_reward_redemptions_user_date
   ON reward_redemptions(user_id, redeemed_at);
+
+CREATE TABLE IF NOT EXISTS user_preferences (
+  user_id TEXT PRIMARY KEY,
+  mode TEXT NOT NULL,
+  accent TEXT NOT NULL,
+  font_scale REAL NOT NULL,
+  density TEXT NOT NULL,
+  reduce_motion INTEGER NOT NULL DEFAULT 0,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 `;
 
 export const SOFT_MIGRATIONS: readonly string[] = [

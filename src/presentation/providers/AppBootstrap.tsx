@@ -6,6 +6,7 @@ import { useUserStore } from '@/presentation/stores';
 import { OnboardingScreen } from '@/presentation/screens/OnboardingScreen';
 import { AppDependenciesProvider } from './AppDependenciesProvider';
 import { useTheme } from './ThemeProvider';
+import { ThemePersistenceGate } from './ThemePersistenceGate';
 
 interface AppBootstrapProps {
   defaultUserName: string;
@@ -67,6 +68,7 @@ export function AppBootstrap({ defaultUserName, children }: AppBootstrapProps) {
 
   return (
     <AppDependenciesProvider dependencies={state.dependencies}>
+      <ThemePersistenceGate />
       <OnboardingGate>{children}</OnboardingGate>
     </AppDependenciesProvider>
   );

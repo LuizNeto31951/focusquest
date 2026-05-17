@@ -17,3 +17,7 @@ export {
   RewardRedemptionMapper,
   type RewardRedemptionRow,
 } from './RewardRedemptionMapper';
+export {
+  UserPreferencesMapper,
+  type UserPreferencesRow,
+} from './UserPreferencesMapper';

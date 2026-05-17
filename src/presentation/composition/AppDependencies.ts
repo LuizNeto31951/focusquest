@@ -4,6 +4,8 @@ import type {
   SkipDayUseCase,
   UpdateUserProfileUseCase,
   CompleteOnboardingUseCase,
+  GetUserPreferencesUseCase,
+  SaveUserPreferencesUseCase,
   ListCategoriesUseCase,
   CreateCategoryUseCase,
   UpdateCategoryUseCase,
@@ -41,6 +43,8 @@ export interface AppDependencies {
   readonly skipDay: SkipDayUseCase;
   readonly updateUserProfile: UpdateUserProfileUseCase;
   readonly completeOnboarding: CompleteOnboardingUseCase;
+  readonly getUserPreferences: GetUserPreferencesUseCase;
+  readonly saveUserPreferences: SaveUserPreferencesUseCase;
 
   readonly listCategories: ListCategoriesUseCase;
   readonly createCategory: CreateCategoryUseCase;

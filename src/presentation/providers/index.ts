@@ -9,3 +9,4 @@ export {
   useAppDependencies,
 } from './AppDependenciesProvider';
 export { AppBootstrap } from './AppBootstrap';
+export { ThemePersistenceGate } from './ThemePersistenceGate';

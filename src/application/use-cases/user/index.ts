@@ -16,3 +16,11 @@ export {
   CompleteOnboardingUseCase,
   type CompleteOnboardingInput,
 } from './CompleteOnboardingUseCase';
+export {
+  GetUserPreferencesUseCase,
+  type GetUserPreferencesInput,
+} from './GetUserPreferencesUseCase';
+export {
+  SaveUserPreferencesUseCase,
+  type SaveUserPreferencesInput,
+} from './SaveUserPreferencesUseCase';
