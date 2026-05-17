@@ -32,6 +32,14 @@ export function FocusScreen() {
     if (session) navigation.navigate('FocusActive', { sessionId: session.id });
   }
 
+  const blockingLabel = !vm.blockerSupported
+    ? 'Indisponível (precisa de dev build Android)'
+    : !vm.blockerReady
+      ? 'Configurar permissões'
+      : vm.blockedCount === 0
+        ? 'Escolher apps para bloquear'
+        : `${vm.blockedCount} app${vm.blockedCount > 1 ? 's' : ''} bloqueado${vm.blockedCount > 1 ? 's' : ''}`;
+
   return (
     <Screen scroll>
       <Typography variant="h2" style={styles.section}>
@@ -56,6 +64,19 @@ export function FocusScreen() {
             />
           ))}
         </View>
+      </View>
+
+      <View style={styles.section}>
+        <Typography variant="label" color="secondary">
+          Bloqueio de apps
+        </Typography>
+        <Button
+          label={blockingLabel}
+          variant="secondary"
+          fullWidth
+          disabled={!vm.blockerSupported}
+          onPress={() => navigation.navigate('BlockedApps')}
+        />
       </View>
 
       {vm.error ? (

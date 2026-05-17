@@ -7,7 +7,7 @@ import type {
   TaskRepository,
   UserRepository,
 } from '@/domain/repositories';
-import type { Clock, IdGenerator } from '@/application/ports';
+import type { AppBlocker, Clock, IdGenerator } from '@/application/ports';
 
 export interface StartFocusSessionInput {
   userId: UniqueId;
@@ -23,6 +23,7 @@ export class StartFocusSessionUseCase {
     private readonly taskRepository: TaskRepository,
     private readonly clock: Clock,
     private readonly idGenerator: IdGenerator,
+    private readonly appBlocker: AppBlocker,
   ) {}
 
   async execute(input: StartFocusSessionInput): Promise<FocusSession> {
@@ -49,6 +50,15 @@ export class StartFocusSessionUseCase {
     });
 
     await this.focusSessionRepository.save(session);
+
+    if (this.appBlocker.isSupported) {
+      try {
+        await this.appBlocker.startBlocking(input.blockedAppPackages ?? []);
+      } catch {
+        // não quebra a sessão se o bloqueio/notificação falhar
+      }
+    }
+
     return session;
   }
 }

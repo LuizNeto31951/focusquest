@@ -8,6 +8,7 @@ export const createStyles = (theme: Theme, paddingToken: SpacingToken) =>
       backgroundColor: theme.colors.background,
     },
     content: {
+      flex: 1,
       padding: theme.spacing[paddingToken],
     },
     scrollContent: {

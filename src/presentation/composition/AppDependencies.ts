@@ -32,7 +32,7 @@ import type {
   ListRedemptionsUseCase,
   GetShopStatsUseCase,
 } from '@/application';
-import type { NotificationScheduler } from '@/application/ports';
+import type { AppBlocker, NotificationScheduler } from '@/application/ports';
 
 export interface AppDependencies {
   readonly ensureCurrentUser: EnsureCurrentUserUseCase;
@@ -75,4 +75,5 @@ export interface AppDependencies {
   readonly getShopStats: GetShopStatsUseCase;
 
   readonly notificationScheduler: NotificationScheduler;
+  readonly appBlocker: AppBlocker;
 }

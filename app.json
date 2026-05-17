@@ -22,7 +22,18 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.luizneto31951.focusquest"
+      "package": "com.luizneto31951.focusquest",
+      "permissions": [
+        "android.permission.PACKAGE_USAGE_STATS"
+      ],
+      "intentFilters": [
+        {
+          "action": "android.settings.USAGE_ACCESS_SETTINGS",
+          "category": [
+            "android.intent.category.DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -43,9 +54,7 @@
       }
     },
     "owner": "luizneto31951",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/223facd2-b5b9-488e-a4ae-5f9b42156635"
     }

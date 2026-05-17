@@ -1,3 +1,4 @@
 export type { Clock } from './Clock';
 export type { IdGenerator } from './IdGenerator';
 export type { NotificationScheduler } from './NotificationScheduler';
+export type { AppBlocker, InstalledAppInfo } from './AppBlocker';

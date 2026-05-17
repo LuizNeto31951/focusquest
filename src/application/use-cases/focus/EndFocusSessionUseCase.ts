@@ -18,7 +18,7 @@ import type {
   XPLogRepository,
 } from '@/domain/repositories';
 import { XPCalculator } from '@/domain/services';
-import type { Clock, IdGenerator } from '@/application/ports';
+import type { AppBlocker, Clock, IdGenerator } from '@/application/ports';
 import type { EvaluateAchievementsUseCase } from '@/application/use-cases/gamification';
 import { CoinRewardCalculator } from '@/application/use-cases/shop';
 
@@ -43,6 +43,7 @@ export class EndFocusSessionUseCase {
     private readonly evaluateAchievements: EvaluateAchievementsUseCase,
     private readonly clock: Clock,
     private readonly idGenerator: IdGenerator,
+    private readonly appBlocker: AppBlocker,
   ) {}
 
   async execute(input: EndFocusSessionInput): Promise<EndFocusSessionOutput> {
@@ -87,6 +88,14 @@ export class EndFocusSessionUseCase {
           now,
         }),
       );
+    }
+
+    if (this.appBlocker.isSupported) {
+      try {
+        await this.appBlocker.stopBlocking();
+      } catch {
+        // ignora — usuário pode ter revogado permissão
+      }
     }
 
     const newlyUnlockedAchievements = await this.evaluateAchievements.execute({

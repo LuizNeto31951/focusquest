@@ -9,6 +9,7 @@ export type TasksStackParamList = {
 export type FocusStackParamList = {
   FocusHome: undefined;
   FocusActive: { sessionId: string };
+  BlockedApps: undefined;
 };
 
 export type ProfileStackParamList = {

@@ -9,6 +9,7 @@ export function Screen({
   scroll = false,
   scrollProps,
   padding = 'lg',
+  edges = ['top', 'left', 'right'],
   style,
   children,
   ...rest
@@ -17,7 +18,7 @@ export function Screen({
   const styles = useMemo(() => createStyles(theme, padding), [theme, padding]);
 
   return (
-    <SafeAreaView style={[styles.container, style]} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={[styles.container, style]} edges={edges}>
       <StatusBar
         barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
         backgroundColor={theme.colors.background}

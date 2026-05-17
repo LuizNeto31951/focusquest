@@ -47,6 +47,7 @@ import {
   ExpoNotificationScheduler,
   SystemClock,
   UuidIdGenerator,
+  ExpoAppBlocker,
 } from '@/infrastructure';
 import type { AppDependencies } from './AppDependencies';
 
@@ -67,6 +68,7 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
   const notificationScheduler = new ExpoNotificationScheduler(
     taskNotificationRepository,
   );
+  const appBlocker = new ExpoAppBlocker();
 
   const evaluateAchievements = new EvaluateAchievementsUseCase(
     userRepository,
@@ -128,6 +130,7 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
       taskRepository,
       clock,
       idGenerator,
+      appBlocker,
     ),
     endFocusSession: new EndFocusSessionUseCase(
       focusSessionRepository,
@@ -136,6 +139,7 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
       evaluateAchievements,
       clock,
       idGenerator,
+      appBlocker,
     ),
     getActiveFocusSession: new GetActiveFocusSessionUseCase(
       focusSessionRepository,
@@ -188,5 +192,6 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
     ),
 
     notificationScheduler,
+    appBlocker,
   };
 }

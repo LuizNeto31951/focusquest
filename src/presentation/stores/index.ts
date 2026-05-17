@@ -11,3 +11,4 @@ export {
   type LevelUpEvent,
 } from './feedbackStore';
 export { useInvalidationStore } from './invalidationStore';
+export { useBlockedAppsStore } from './blockedAppsStore';

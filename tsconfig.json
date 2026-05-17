@@ -21,6 +21,9 @@
       ],
       "@/shared/*": [
         "src/shared/*"
+      ],
+      "app-blocker": [
+        "modules/app-blocker"
       ]
     }
   },

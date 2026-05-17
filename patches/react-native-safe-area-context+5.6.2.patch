@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt b/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt
+index 52450f0..f5db30d 100644
+--- a/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt
++++ b/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt
+@@ -36,6 +36,8 @@ if (REACTNATIVE_MERGED_SO)
+           fbjni
+           jsi
+           reactnative
++          log
++          c++_shared
+   )
+ else()
+   target_link_libraries(

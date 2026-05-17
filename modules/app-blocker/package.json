@@ -1,0 +1,7 @@
+{
+  "name": "app-blocker",
+  "version": "0.1.0",
+  "description": "Bloqueio de apps Android durante modo foco (Kotlin + UsageStatsManager).",
+  "main": "index.ts",
+  "private": true
+}
