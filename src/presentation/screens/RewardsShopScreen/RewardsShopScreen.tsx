@@ -126,13 +126,11 @@ export function RewardsShopScreen() {
           <EmptyState
             icon={Gift}
             title="Sua lojinha está vazia"
-            description="Crie sua primeira recompensa e comece a se incentivar."
-          />
-          <Button
-            label="Criar recompensa"
-            variant="primary"
-            fullWidth
-            onPress={() => navigation.navigate('RewardEditor', {})}
+            description="Cadastre coisas que você quer se permitir (assistir um episódio, comprar um café). Defina o preço em moedas e resgate quando conquistar."
+            action={{
+              label: 'Criar recompensa',
+              onPress: () => navigation.navigate('RewardEditor', {}),
+            }}
           />
         </Card>
       ) : vm.rewards.length === 0 ? (

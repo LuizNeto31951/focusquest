@@ -88,7 +88,11 @@ export function TasksScreen() {
         <EmptyState
           icon={ListTodo}
           title="Nenhuma tarefa por aqui"
-          description="Toque no botão + para criar uma."
+          description="Cadastre tarefas com prioridade, prazo e duração. Cada conclusão rende XP e moedas. Tarefas recorrentes ajudam a manter rotinas."
+          action={{
+            label: 'Criar primeira tarefa',
+            onPress: () => navigation.navigate('TaskForm', {}),
+          }}
         />
       ) : (
         <View style={styles.list}>

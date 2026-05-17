@@ -54,6 +54,9 @@ export function AchievementsScreen() {
         <Typography variant="body" color="secondary">
           {vm.unlockedCount} de {vm.total} desbloqueadas
         </Typography>
+        <Typography variant="caption" color="secondary">
+          Conquistas desbloqueiam automaticamente conforme você usa o app, e cada uma dá moedas extras. Crie também as suas próprias metas.
+        </Typography>
       </View>
 
       <View style={styles.createButton}>

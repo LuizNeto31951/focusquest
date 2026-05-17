@@ -9,6 +9,7 @@ export interface User {
   readonly totalXP: XP;
   readonly streak: Streak;
   readonly coins: number;
+  readonly onboardingCompletedAt?: ISODate;
   readonly createdAt: ISODate;
   readonly updatedAt: ISODate;
 }
@@ -76,4 +77,9 @@ export function spendCoins(user: User, amount: number, now: ISODate): User {
     throw new ValidationError('Saldo de moedas insuficiente');
   }
   return { ...user, coins: user.coins - safe, updatedAt: now };
+}
+
+export function completeOnboarding(user: User, now: ISODate): User {
+  if (user.onboardingCompletedAt) return user;
+  return { ...user, onboardingCompletedAt: now, updatedAt: now };
 }

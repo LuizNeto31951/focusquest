@@ -3,6 +3,7 @@ import type {
   GetUserStatsUseCase,
   SkipDayUseCase,
   UpdateUserProfileUseCase,
+  CompleteOnboardingUseCase,
   ListCategoriesUseCase,
   CreateCategoryUseCase,
   UpdateCategoryUseCase,
@@ -39,6 +40,7 @@ export interface AppDependencies {
   readonly getUserStats: GetUserStatsUseCase;
   readonly skipDay: SkipDayUseCase;
   readonly updateUserProfile: UpdateUserProfileUseCase;
+  readonly completeOnboarding: CompleteOnboardingUseCase;
 
   readonly listCategories: ListCategoriesUseCase;
   readonly createCategory: CreateCategoryUseCase;

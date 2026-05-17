@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
   streak_longest INTEGER NOT NULL DEFAULT 0,
   streak_last_active_date TEXT,
   coins INTEGER NOT NULL DEFAULT 0,
+  onboarding_completed_at TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
@@ -160,4 +161,5 @@ export const SOFT_MIGRATIONS: readonly string[] = [
   'ALTER TABLE achievements ADD COLUMN is_custom INTEGER NOT NULL DEFAULT 0',
   'ALTER TABLE users ADD COLUMN coins INTEGER NOT NULL DEFAULT 0',
   'ALTER TABLE achievements ADD COLUMN coin_reward INTEGER NOT NULL DEFAULT 0',
+  'ALTER TABLE users ADD COLUMN onboarding_completed_at TEXT',
 ];

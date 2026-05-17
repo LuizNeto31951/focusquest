@@ -111,7 +111,12 @@ export function HomeScreen() {
         <EmptyState
           icon={ListChecks}
           title="Sem tarefas para hoje"
-          description="Crie uma tarefa pela aba Tarefas."
+          description="Quando você criar tarefas com prazo ou recorrência, elas aparecem aqui no dia certo."
+          action={{
+            label: 'Ir para Tarefas',
+            onPress: () =>
+              navigation.navigate('Tasks', { screen: 'TasksList' }),
+          }}
         />
       ) : (
         <>

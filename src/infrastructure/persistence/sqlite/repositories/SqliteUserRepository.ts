@@ -28,8 +28,8 @@ export class SqliteUserRepository implements UserRepository {
       `INSERT INTO users (
         id, name, avatar_uri, total_xp,
         streak_current, streak_longest, streak_last_active_date,
-        coins, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        coins, onboarding_completed_at, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         name = excluded.name,
         avatar_uri = excluded.avatar_uri,
@@ -38,6 +38,7 @@ export class SqliteUserRepository implements UserRepository {
         streak_longest = excluded.streak_longest,
         streak_last_active_date = excluded.streak_last_active_date,
         coins = excluded.coins,
+        onboarding_completed_at = excluded.onboarding_completed_at,
         updated_at = excluded.updated_at`,
       r.id,
       r.name,
@@ -47,6 +48,7 @@ export class SqliteUserRepository implements UserRepository {
       r.streak_longest,
       r.streak_last_active_date,
       r.coins ?? 0,
+      r.onboarding_completed_at,
       r.created_at,
       r.updated_at,
     );

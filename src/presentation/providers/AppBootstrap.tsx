@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { initializeDatabase } from '@/infrastructure';
 import { buildAppDependencies, type AppDependencies } from '@/presentation/composition';
+import { useUserStore } from '@/presentation/stores';
+import { OnboardingScreen } from '@/presentation/screens/OnboardingScreen';
 import { AppDependenciesProvider } from './AppDependenciesProvider';
 import { useTheme } from './ThemeProvider';
 
@@ -18,6 +20,7 @@ type BootState =
 export function AppBootstrap({ defaultUserName, children }: AppBootstrapProps) {
   const [state, setState] = useState<BootState>({ status: 'loading' });
   const theme = useTheme();
+  const setUser = useUserStore((s) => s.setUser);
 
   useEffect(() => {
     let cancelled = false;
@@ -26,7 +29,11 @@ export function AppBootstrap({ defaultUserName, children }: AppBootstrapProps) {
       try {
         const { client } = await initializeDatabase();
         const dependencies = buildAppDependencies(client);
-        await dependencies.ensureCurrentUser.execute({ defaultName: defaultUserName });
+        const user = await dependencies.ensureCurrentUser.execute({
+          defaultName: defaultUserName,
+        });
+        if (cancelled) return;
+        setUser(user);
         await dependencies.notificationScheduler.requestPermissions().catch(() => false);
         if (!cancelled) setState({ status: 'ready', dependencies });
       } catch (err) {
@@ -40,7 +47,7 @@ export function AppBootstrap({ defaultUserName, children }: AppBootstrapProps) {
     return () => {
       cancelled = true;
     };
-  }, [defaultUserName]);
+  }, [defaultUserName, setUser]);
 
   if (state.status === 'loading') {
     return (
@@ -60,9 +67,18 @@ export function AppBootstrap({ defaultUserName, children }: AppBootstrapProps) {
 
   return (
     <AppDependenciesProvider dependencies={state.dependencies}>
-      {children}
+      <OnboardingGate>{children}</OnboardingGate>
     </AppDependenciesProvider>
   );
+}
+
+function OnboardingGate({ children }: { children: React.ReactNode }) {
+  const user = useUserStore((s) => s.user);
+  if (!user) return null;
+  if (!user.onboardingCompletedAt) {
+    return <OnboardingScreen />;
+  }
+  return <>{children}</>;
 }
 
 const styles = StyleSheet.create({

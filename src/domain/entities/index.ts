@@ -28,6 +28,7 @@ export {
   setStreak,
   earnCoins,
   spendCoins,
+  completeOnboarding,
 } from './User';
 
 export {

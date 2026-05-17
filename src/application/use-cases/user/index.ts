@@ -12,3 +12,7 @@ export {
   UpdateUserProfileUseCase,
   type UpdateUserProfileInput,
 } from './UpdateUserProfileUseCase';
+export {
+  CompleteOnboardingUseCase,
+  type CompleteOnboardingInput,
+} from './CompleteOnboardingUseCase';

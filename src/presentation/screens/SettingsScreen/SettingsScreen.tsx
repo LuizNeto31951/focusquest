@@ -32,6 +32,13 @@ export function SettingsScreen() {
   return (
     <Screen scroll>
       <View style={styles.section}>
+        <Typography variant="h2">Configurações</Typography>
+        <Typography variant="caption" color="secondary">
+          Ajuste o app à sua sensibilidade: cores, tamanho da fonte, espaçamento e animações. Cada pessoa com TDAH tem preferências sensoriais diferentes — explore o que funciona para você.
+        </Typography>
+      </View>
+
+      <View style={styles.section}>
         <Typography variant="h3">Personalização</Typography>
         <Button
           label="Categorias"
