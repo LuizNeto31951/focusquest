@@ -30,3 +30,4 @@ export { useRedeemReward } from './useRedeemReward';
 export { useRedemptions } from './useRedemptions';
 export { useShopStats } from './useShopStats';
 export { useAppBlocker } from './useAppBlocker';
+export { useFocusExitAds } from './useFocusExitAds';

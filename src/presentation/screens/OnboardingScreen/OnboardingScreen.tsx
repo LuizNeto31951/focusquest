@@ -169,8 +169,14 @@ function WelcomePage({ styles, width }: PageProps) {
         Bem-vindo ao FocusQuest
       </Typography>
       <Typography variant="body" color="secondary" style={styles.description}>
-        Um app pensado para quem tem TDAH: organize sua rotina, entre em
-        modo foco e seja recompensado por cada conquista.
+        FocusQuest é um aplicativo de gerenciamento de rotina gamificado,
+        criado especialmente para ajudar pessoas dispersas, hiperativas ou
+        diagnosticadas com TDAH a manter foco, organização e consistência no
+        dia a dia.
+      </Typography>
+      <Typography variant="body" color="secondary" style={styles.description}>
+        Combina tarefas, sessões de foco e recompensas em uma experiência
+        simples e motivadora. Funciona totalmente offline, sem cadastro ou login.
       </Typography>
       <Typography variant="caption" color="secondary" style={styles.description}>
         Você pode pular esta introdução a qualquer momento e revisitar tudo dentro do app.
@@ -187,16 +193,17 @@ function TasksPage({ styles, width }: PageProps) {
         <Icon name={ListChecks} size={56} color={theme.colors.accent} />
       </View>
       <Typography variant="h2" style={styles.title}>
-        Tarefas que respeitam a sua rotina
+        Organize suas tarefas
       </Typography>
       <Typography variant="body" color="secondary" style={styles.description}>
-        Crie tarefas com prioridade, prazo e duração estimada. Organize por
-        categoria, divida em subtarefas e configure rotinas que se repetem.
+        Crie tarefas de forma simples e personalize cada atividade com
+        título, descrição, categoria, prioridade, duração estimada e prazo
+        (com horário opcional).
       </Typography>
       <View style={styles.bullets}>
-        <Bullet text="Tarefas únicas ou recorrentes (diária, semanal, a cada N dias)" />
-        <Bullet text="Subtarefas para quebrar trabalhos grandes em passos menores" />
-        <Bullet text="Lembretes locais no horário que você agendar" />
+        <Bullet text="Subtarefas para quebrar trabalhos grandes" />
+        <Bullet text="Tarefas recorrentes (diárias, semanais ou personalizadas)" />
+        <Bullet text="Filtros por categoria, concluídas ou 'Hoje'" />
       </View>
     </PageContainer>
   );
@@ -210,18 +217,20 @@ function FocusPage({ styles, width }: PageProps) {
         <Icon name={Target} size={56} color={theme.colors.accent} />
       </View>
       <Typography variant="h2" style={styles.title}>
-        Modo foco com bloqueio real
+        Entre no Modo Foco
       </Typography>
       <Typography variant="body" color="secondary" style={styles.description}>
-        Escolha a duração da sessão (15, 25, 45 ou 60 min), selecione os
-        apps distratores e o FocusQuest impede o acesso enquanto o foco
-        estiver ativo.
+        Sessões estilo Pomodoro com bloqueio real de aplicativos. Escolha a
+        duração (15, 25, 45 ou 60 minutos) e os aplicativos que serão bloqueados.
       </Typography>
       <View style={styles.bullets}>
-        <Bullet text="Cronômetro visível e notificação persistente" />
-        <Bullet text="Sobreposição em tela cheia quando um app bloqueado abre" />
-        <Bullet text="Funciona em segundo plano enquanto você usa outros apps" />
+        <Bullet text="Aplicativos distratores bloqueados automaticamente" />
+        <Bullet text="Notificação persistente com o tempo restante" />
+        <Bullet text="Interromper a sessão cancela as recompensas" />
       </View>
+      <Typography variant="caption" color="secondary" style={styles.description}>
+        Atenção: o objetivo é criar uma barreira prática contra distrações e manter você concentrado.
+      </Typography>
     </PageContainer>
   );
 }
@@ -234,17 +243,16 @@ function GamificationPage({ styles, width }: PageProps) {
         <Icon name={Trophy} size={56} color={theme.colors.accent} />
       </View>
       <Typography variant="h2" style={styles.title}>
-        Recompensa imediata para o seu cérebro
+        Ganhe XP e evolua
       </Typography>
       <Typography variant="body" color="secondary" style={styles.description}>
-        Cada tarefa concluída e cada sessão de foco rendem XP, moedas e podem
-        desbloquear conquistas.
+        Cada tarefa concluída e sessão de foco finalizada gera recompensas:
+        XP, moedas, streak diário e conquistas especiais.
       </Typography>
       <View style={styles.bullets}>
-        <Bullet text="XP por prioridade, duração, pontualidade e sequência de dias" />
-        <Bullet text="Suba de nível conforme acumula experiência" />
-        <Bullet text="Cadastre as suas próprias recompensas na Lojinha e troque por moedas" />
-        <Bullet text="Conquistas automáticas conforme você usa o app" />
+        <Bullet text="Quanto mais consistente, maior a progressão de níveis" />
+        <Bullet text="Produtividade transformada em experiência gamificada" />
+        <Bullet text="Aumento de motivação e engajamento" />
       </View>
     </PageContainer>
   );

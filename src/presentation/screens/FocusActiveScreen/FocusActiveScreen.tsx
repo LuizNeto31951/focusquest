@@ -1,13 +1,15 @@
-import React, { useMemo } from 'react';
-import { View, Text } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import { Alert, View, Text } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type {
   NativeStackNavigationProp,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { Screen, Typography, Button } from '@/presentation/components';
+import { StopFocusConfirmModal } from '@/presentation/components/StopFocusConfirmModal';
 import { useTheme } from '@/presentation/providers';
 import type { FocusStackParamList } from '@/presentation/navigation/types';
+import { useFocusExitAds } from '@/presentation/hooks/useFocusExitAds';
 import { useFocusActiveScreen } from './useFocusActiveScreen';
 import { createStyles } from './FocusActiveScreen.styles';
 
@@ -26,10 +28,34 @@ export function FocusActiveScreen() {
     useNavigation<NativeStackNavigationProp<FocusStackParamList>>();
   const route = useRoute<RouteProp>();
   const vm = useFocusActiveScreen(route.params.sessionId);
+  const { showTwoAds, loadingAds } = useFocusExitAds();
+
+  const [pendingInterrupted, setPendingInterrupted] = useState<boolean | null>(null);
 
   async function handleFinish(interrupted: boolean) {
     await vm.stop(interrupted);
     navigation.goBack();
+  }
+
+  function requestStop(interrupted: boolean) {
+    setPendingInterrupted(interrupted);
+  }
+
+  async function handleConfirmStop() {
+    if (pendingInterrupted === null) return;
+    const interrupted = pendingInterrupted;
+
+    const success = await showTwoAds();
+    if (!success) {
+      Alert.alert(
+        'Sem conexão',
+        'Não foi possível carregar os anúncios. Verifique sua conexão e tente novamente.',
+      );
+      return;
+    }
+
+    setPendingInterrupted(null);
+    await handleFinish(interrupted);
   }
 
   if (!vm.activeSession) {
@@ -68,19 +94,26 @@ export function FocusActiveScreen() {
                 variant="secondary"
                 fullWidth
                 loading={vm.loading}
-                onPress={() => handleFinish(false)}
+                onPress={() => requestStop(false)}
               />
               <Button
                 label="Encerrar (interrompida)"
                 variant="danger"
                 fullWidth
                 loading={vm.loading}
-                onPress={() => handleFinish(true)}
+                onPress={() => requestStop(true)}
               />
             </>
           )}
         </View>
       </View>
+
+      <StopFocusConfirmModal
+        visible={pendingInterrupted !== null}
+        loading={loadingAds}
+        onCancel={() => setPendingInterrupted(null)}
+        onConfirm={handleConfirmStop}
+      />
     </Screen>
   );
 }
