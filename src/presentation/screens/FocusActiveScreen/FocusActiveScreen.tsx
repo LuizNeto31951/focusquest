@@ -28,7 +28,7 @@ export function FocusActiveScreen() {
     useNavigation<NativeStackNavigationProp<FocusStackParamList>>();
   const route = useRoute<RouteProp>();
   const vm = useFocusActiveScreen(route.params.sessionId);
-  const { showTwoAds, loadingAds } = useFocusExitAds();
+  const { showRewardedAd, loadingAds } = useFocusExitAds();
 
   const [pendingInterrupted, setPendingInterrupted] = useState<boolean | null>(null);
 
@@ -45,11 +45,11 @@ export function FocusActiveScreen() {
     if (pendingInterrupted === null) return;
     const interrupted = pendingInterrupted;
 
-    const success = await showTwoAds();
-    if (!success) {
+    const rewarded = await showRewardedAd();
+    if (!rewarded) {
       Alert.alert(
-        'Sem conexão',
-        'Não foi possível carregar os anúncios. Verifique sua conexão e tente novamente.',
+        'Recompensa não recebida',
+        'Assista o anúncio até o fim para encerrar o modo foco.',
       );
       return;
     }

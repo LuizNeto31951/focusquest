@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { useTheme } from '@/presentation/providers';
 import { resolveColor } from '@/presentation/components/Typography/Typography.styles';
 import type { TypographyColor } from '@/presentation/components/Typography';
@@ -26,5 +27,9 @@ export function Icon({
     typeof color === 'string' && NAMED_COLORS.has(color as TypographyColor)
       ? resolveColor(theme, color as TypographyColor)
       : (color as string);
-  return <Component size={size} color={resolved} strokeWidth={strokeWidth} />;
+  return (
+    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      <Component size={size} color={resolved} strokeWidth={strokeWidth} />
+    </View>
+  );
 }

@@ -50,4 +50,11 @@ yarn-error.*
 /android/build/
 /android/app/build/
 /android/app/.cxx/
+/android/app/.cxx_old*/
 /android/local.properties
+
+# Módulos nativos locais
+modules/*/android/build/
+modules/*/android/.gradle/
+modules/*/android/.kotlin/
+modules/*/android/local.properties

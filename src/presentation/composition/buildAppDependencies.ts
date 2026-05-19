@@ -160,6 +160,10 @@ export function buildAppDependencies(client: SqliteClient): AppDependencies {
     listAchievements: new ListAchievementsUseCase(achievementRepository),
     createCustomAchievement: new CreateCustomAchievementUseCase(
       achievementRepository,
+      userRepository,
+      taskRepository,
+      focusSessionRepository,
+      clock,
       idGenerator,
     ),
     deleteCustomAchievement: new DeleteCustomAchievementUseCase(

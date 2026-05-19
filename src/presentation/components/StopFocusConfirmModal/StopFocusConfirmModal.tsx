@@ -29,8 +29,8 @@ export function StopFocusConfirmModal({ visible, loading, onCancel, onConfirm }:
           </Typography>
 
           <Typography variant="body" color="secondary" align="center">
-            Para sair antes do tempo, você precisará assistir{' '}
-            2 anúncios completos. Cada interrupção tem um custo — use com consciência.
+            Para sair antes do tempo, você precisará assistir um anúncio completo.
+            Só será liberado ao receber a recompensa — use com consciência.
           </Typography>
 
           <View style={styles.actions}>
@@ -42,7 +42,7 @@ export function StopFocusConfirmModal({ visible, loading, onCancel, onConfirm }:
               onPress={onCancel}
             />
             <Button
-              label="Assistir anúncios e encerrar"
+              label="Assistir anúncio e encerrar"
               variant="danger"
               fullWidth
               loading={loading}

@@ -82,7 +82,7 @@ def enableMinifyInReleaseBuilds = (findProperty('android.enableMinifyInReleaseBu
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 android {
-    ndkVersion "27.2.12479018"
+    ndkVersion rootProject.ext.ndkVersion
 
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
@@ -96,16 +96,6 @@ android {
         versionName "1.0.0"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
-
-        // Fix para "undefined symbol: operator new / std::__ndk1::*" no Windows com
-        // RN 0.81 + new arch. Força link de libc++_shared em todos os builds CMake
-        // do :app (incluindo os autolinked_build do codegen das libs).
-        externalNativeBuild {
-            cmake {
-                arguments "-DANDROID_STL=c++_shared",
-                          "-DCMAKE_SHARED_LINKER_FLAGS=-lc++_shared -llog"
-            }
-        }
     }
     signingConfigs {
         debug {
@@ -135,6 +125,12 @@ android {
         jniLibs {
             def enableLegacyPackaging = findProperty('expo.useLegacyPackaging') ?: 'false'
             useLegacyPackaging enableLegacyPackaging.toBoolean()
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "src/main/jni/CMakeLists.txt"
+            version "3.22.1"
         }
     }
     androidResources {

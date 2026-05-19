@@ -22,27 +22,3 @@ allprojects {
 
 apply plugin: "expo-root-project"
 apply plugin: "com.facebook.react.rootproject"
-
-// Força NDK 27.2.12479018 em todos os subprojetos nativos para evitar
-// "undefined symbol: std::__ndk1::..." causado por mismatch de ABI libc++
-// no NDK 27.1 com libs precompiladas (react-native-screens, expo-modules-core, etc.)
-ext.ndkVersion = "27.2.12479018"
-rootProject.ext.ndkVersion = "27.2.12479018"
-// Injeta -lc++_shared em todos os builds CMake para resolver "undefined symbol:
-// operator new / __cxa_throw / std::__ndk1::*" — bug do prefab da RN 0.81 no
-// Windows onde libc++_shared não é resolvido transitivamente.
-def forceCppShared = { android ->
-  android.ndkVersion = "27.2.12479018"
-  android.defaultConfig.externalNativeBuild.cmake.arguments(
-    "-DANDROID_STL=c++_shared",
-    "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--no-undefined -lc++_shared -llog",
-  )
-}
-subprojects {
-  plugins.withId("com.android.library") {
-    forceCppShared(extensions.getByName("android"))
-  }
-  plugins.withId("com.android.application") {
-    forceCppShared(extensions.getByName("android"))
-  }
-}

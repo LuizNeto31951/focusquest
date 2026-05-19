@@ -15,6 +15,8 @@ export interface Achievement {
   readonly requirement: AchievementRequirement;
   readonly isCustom: boolean;
   readonly coinReward: number;
+  /** Valor do contador no momento da criação (apenas achievements customizados). Evita desbloqueio imediato. */
+  readonly baseline?: number;
 }
 
 export function coinRewardForRequirement(

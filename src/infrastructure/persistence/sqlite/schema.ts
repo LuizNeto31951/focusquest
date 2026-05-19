@@ -173,4 +173,5 @@ export const SOFT_MIGRATIONS: readonly string[] = [
   'ALTER TABLE users ADD COLUMN coins INTEGER NOT NULL DEFAULT 0',
   'ALTER TABLE achievements ADD COLUMN coin_reward INTEGER NOT NULL DEFAULT 0',
   'ALTER TABLE users ADD COLUMN onboarding_completed_at TEXT',
+  'ALTER TABLE achievements ADD COLUMN baseline INTEGER',
 ];

@@ -30,15 +30,16 @@ export class SqliteAchievementRepository implements AchievementRepository {
   async save(achievement: Achievement): Promise<void> {
     const r = AchievementMapper.toRow(achievement);
     await this.client.run(
-      `INSERT INTO achievements (code, name, description, icon_name, requirement, is_custom, coin_reward)
-       VALUES (?, ?, ?, ?, ?, ?, ?)
+      `INSERT INTO achievements (code, name, description, icon_name, requirement, is_custom, coin_reward, baseline)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(code) DO UPDATE SET
          name = excluded.name,
          description = excluded.description,
          icon_name = excluded.icon_name,
          requirement = excluded.requirement,
          is_custom = excluded.is_custom,
-         coin_reward = excluded.coin_reward`,
+         coin_reward = excluded.coin_reward,
+         baseline = excluded.baseline`,
       r.code,
       r.name,
       r.description,
@@ -46,6 +47,7 @@ export class SqliteAchievementRepository implements AchievementRepository {
       r.requirement,
       r.is_custom,
       r.coin_reward ?? 0,
+      r.baseline ?? null,
     );
   }
 
