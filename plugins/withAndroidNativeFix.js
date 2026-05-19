@@ -1,4 +1,4 @@
-const { withAppBuildGradle, withGradleProperties, withDangerousMod } = require('@expo/config-plugins');
+const { withAppBuildGradle, withDangerousMod } = require('@expo/config-plugins');
 const path = require('path');
 const fs = require('fs');
 
@@ -23,18 +23,6 @@ function withExternalNativeBuild(config) {
   });
 }
 
-function withJavaHome(config) {
-  return withGradleProperties(config, (mod) => {
-    if (mod.modResults.find((p) => p.key === 'org.gradle.java.home')) return mod;
-    mod.modResults.push({
-      type: 'property',
-      key: 'org.gradle.java.home',
-      value: 'C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr',
-    });
-    return mod;
-  });
-}
-
 function withJniCMake(config) {
   return withDangerousMod(config, [
     'android',
@@ -52,7 +40,6 @@ function withJniCMake(config) {
 
 module.exports = function withAndroidNativeFix(config) {
   config = withExternalNativeBuild(config);
-  config = withJavaHome(config);
   config = withJniCMake(config);
   return config;
 };
