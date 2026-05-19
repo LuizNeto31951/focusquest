@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Alert, View, Text } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type {
   NativeStackNavigationProp,
@@ -68,24 +68,75 @@ export function FocusActiveScreen() {
     );
   }
 
-  const finished = vm.remainingSeconds === 0;
+  const pomo = vm.pomodoroState;
+  const isBreak = pomo?.phase === 'break';
+
+  const phaseLabel = pomo
+    ? pomo.phase === 'focus'
+      ? 'Foco'
+      : pomo.phase === 'break'
+        ? 'Pausa'
+        : 'Concluído'
+    : vm.finished
+      ? 'Sessão concluída'
+      : 'Tempo restante';
 
   return (
     <Screen>
       <View style={styles.container}>
-        <Typography variant="label" color="secondary">
-          {finished ? 'Sessão concluída' : 'Tempo restante'}
+        <Typography
+          variant="label"
+          color={isBreak ? 'success' : 'secondary'}
+          style={styles.phaseLabel}
+        >
+          {phaseLabel}
         </Typography>
-        <Text style={styles.timer}>
-          {formatTime(finished ? vm.secondsElapsed : vm.remainingSeconds)}
+
+        {pomo ? (
+          <View style={styles.cycleIndicator}>
+            {Array.from({ length: pomo.totalCycles }).map((_, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.cycleDot,
+                  {
+                    backgroundColor:
+                      i + 1 < pomo.cycle
+                        ? theme.colors.success
+                        : i + 1 === pomo.cycle
+                          ? isBreak
+                            ? theme.colors.success
+                            : theme.colors.accent
+                          : theme.colors.border,
+                  },
+                ]}
+              />
+            ))}
+            <Typography variant="caption" color="secondary">
+              {pomo.cycle}/{pomo.totalCycles}
+            </Typography>
+          </View>
+        ) : null}
+
+        <Text style={[styles.timer, isBreak && styles.timerBreak]}>
+          {formatTime(vm.remainingSeconds)}
         </Text>
+
         <View style={styles.actions}>
-          {finished ? (
+          {vm.finished ? (
             <Button
               label="Concluir sessão"
               fullWidth
               loading={vm.loading}
               onPress={() => handleFinish(false)}
+            />
+          ) : isBreak ? (
+            <Button
+              label="Encerrar (interrompida)"
+              variant="danger"
+              fullWidth
+              loading={vm.loading}
+              onPress={() => requestStop(true)}
             />
           ) : (
             <>

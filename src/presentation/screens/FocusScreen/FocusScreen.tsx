@@ -53,7 +53,7 @@ export function FocusScreen() {
       </Card>
 
       <View style={styles.section}>
-        <Typography variant="label" color="secondary">Duração</Typography>
+        <Typography variant="label" color="secondary">Duração do foco</Typography>
         <View style={styles.row}>
           {vm.durations.map((d) => (
             <Chip
@@ -65,6 +65,36 @@ export function FocusScreen() {
           ))}
         </View>
       </View>
+
+      <View style={styles.section}>
+        <Typography variant="label" color="secondary">Ciclos Pomodoro</Typography>
+        <View style={styles.row}>
+          {vm.pomodoroCycleOptions.map((c) => (
+            <Chip
+              key={c}
+              label={c === 1 ? 'Sem ciclos' : `${c} ciclos`}
+              selected={vm.pomodoroCycles === c}
+              onPress={() => vm.setPomodoroCycles(c)}
+            />
+          ))}
+        </View>
+      </View>
+
+      {vm.pomodoroEnabled ? (
+        <View style={styles.section}>
+          <Typography variant="label" color="secondary">Pausa entre ciclos</Typography>
+          <View style={styles.row}>
+            {vm.pomodoroBreakOptions.map((b) => (
+              <Chip
+                key={b}
+                label={`${b} min`}
+                selected={vm.pomodoroBreakMinutes === b}
+                onPress={() => vm.setPomodoroBreakMinutes(b)}
+              />
+            ))}
+          </View>
+        </View>
+      ) : null}
 
       <View style={styles.section}>
         <Typography variant="label" color="secondary">

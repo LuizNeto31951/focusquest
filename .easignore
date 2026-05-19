@@ -1,0 +1,24 @@
+# Inherit from .gitignore
+node_modules/
+
+# Android build artifacts inside node_modules (cause EPERM on Windows due to long paths)
+node_modules/**/android/build/
+node_modules/**/android/build_old/
+node_modules/**/android/.cxx/
+node_modules/**/android/.gradle/
+
+# Expo managed
+.expo/
+dist/
+web-build/
+
+# Native build artifacts
+android/.gradle/
+android/.kotlin/
+android/build/
+android/app/build/
+android/app/.cxx/
+android/app/.cxx_old*/
+modules/*/android/build/
+modules/*/android/.gradle/
+modules/*/android/.kotlin/

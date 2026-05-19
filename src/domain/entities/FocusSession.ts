@@ -12,6 +12,8 @@ export interface FocusSession {
   readonly plannedDurationMinutes: DurationMinutes;
   readonly wasInterrupted: boolean;
   readonly blockedAppPackages: readonly string[];
+  readonly pomodoroCycles?: number;
+  readonly pomodoroBreakMinutes?: number;
 }
 
 export interface StartFocusSessionProps {
@@ -20,6 +22,8 @@ export interface StartFocusSessionProps {
   taskId?: UniqueId;
   plannedDurationMinutes: DurationMinutes;
   blockedAppPackages?: readonly string[];
+  pomodoroCycles?: number;
+  pomodoroBreakMinutes?: number;
   now: ISODate;
 }
 
@@ -32,6 +36,8 @@ export function startFocusSession(props: StartFocusSessionProps): FocusSession {
     plannedDurationMinutes: props.plannedDurationMinutes,
     wasInterrupted: false,
     blockedAppPackages: props.blockedAppPackages ?? [],
+    pomodoroCycles: props.pomodoroCycles,
+    pomodoroBreakMinutes: props.pomodoroBreakMinutes,
   };
 }
 

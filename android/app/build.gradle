@@ -127,14 +127,14 @@ android {
             useLegacyPackaging enableLegacyPackaging.toBoolean()
         }
     }
+    androidResources {
+        ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
+    }
     externalNativeBuild {
         cmake {
             path "src/main/jni/CMakeLists.txt"
             version "3.22.1"
         }
-    }
-    androidResources {
-        ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
 }
 

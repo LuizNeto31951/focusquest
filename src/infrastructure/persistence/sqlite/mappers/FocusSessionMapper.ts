@@ -11,6 +11,8 @@ export interface FocusSessionRow {
   planned_duration_minutes: number;
   was_interrupted: number;
   blocked_app_packages: string;
+  pomodoro_cycles: number | null;
+  pomodoro_break_minutes: number | null;
 }
 
 export const FocusSessionMapper = {
@@ -24,6 +26,8 @@ export const FocusSessionMapper = {
       planned_duration_minutes: session.plannedDurationMinutes,
       was_interrupted: session.wasInterrupted ? 1 : 0,
       blocked_app_packages: JSON.stringify(session.blockedAppPackages),
+      pomodoro_cycles: session.pomodoroCycles ?? null,
+      pomodoro_break_minutes: session.pomodoroBreakMinutes ?? null,
     };
   },
 
@@ -37,6 +41,8 @@ export const FocusSessionMapper = {
       plannedDurationMinutes: DurationMinutes.from(row.planned_duration_minutes),
       wasInterrupted: row.was_interrupted === 1,
       blockedAppPackages: JSON.parse(row.blocked_app_packages) as string[],
+      pomodoroCycles: row.pomodoro_cycles ?? undefined,
+      pomodoroBreakMinutes: row.pomodoro_break_minutes ?? undefined,
     };
   },
 };

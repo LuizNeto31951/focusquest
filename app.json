@@ -39,6 +39,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      "./plugins/withAndroidNativeFix",
       "expo-sqlite",
       "@react-native-community/datetimepicker",
       [

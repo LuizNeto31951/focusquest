@@ -14,4 +14,5 @@ export interface AppBlocker {
   listInstalledApps(): Promise<InstalledAppInfo[]>;
   startBlocking(packageNames: readonly string[]): Promise<void>;
   stopBlocking(): Promise<void>;
+  updateFocusNotification(title: string, text: string): Promise<void>;
 }

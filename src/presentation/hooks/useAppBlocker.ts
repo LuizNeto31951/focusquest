@@ -40,6 +40,7 @@ export function useAppBlocker() {
 
   return {
     supported: appBlocker.isSupported,
+    isSupported: appBlocker.isSupported,
     hasUsageAccess: hasUsage,
     hasOverlay,
     installedApps,
@@ -49,5 +50,6 @@ export function useAppBlocker() {
     loadInstalledApps,
     requestUsageAccess: appBlocker.requestUsageAccessPermission.bind(appBlocker),
     requestOverlay: appBlocker.requestOverlayPermission.bind(appBlocker),
+    updateFocusNotification: appBlocker.updateFocusNotification.bind(appBlocker),
   };
 }

@@ -76,6 +76,16 @@ class AppBlockerModule : Module() {
       }
       ctx.startService(intent)
     }
+
+    AsyncFunction("updateFocusNotification") { title: String, text: String ->
+      val ctx = currentContext()
+      val intent = Intent(ctx, AppBlockerService::class.java).apply {
+        action = AppBlockerService.ACTION_UPDATE_NOTIFICATION
+        putExtra(AppBlockerService.EXTRA_NOTIF_TITLE, title)
+        putExtra(AppBlockerService.EXTRA_NOTIF_TEXT, text)
+      }
+      ctx.startService(intent)
+    }
   }
 
   private fun currentContext(): Context =

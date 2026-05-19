@@ -14,6 +14,8 @@ export interface StartFocusSessionInput {
   taskId?: UniqueId;
   plannedDurationMinutes: number;
   blockedAppPackages?: readonly string[];
+  pomodoroCycles?: number;
+  pomodoroBreakMinutes?: number;
 }
 
 export class StartFocusSessionUseCase {
@@ -46,6 +48,8 @@ export class StartFocusSessionUseCase {
       taskId: input.taskId,
       plannedDurationMinutes: DurationMinutes.from(input.plannedDurationMinutes),
       blockedAppPackages: input.blockedAppPackages,
+      pomodoroCycles: input.pomodoroCycles,
+      pomodoroBreakMinutes: input.pomodoroBreakMinutes,
       now: this.clock.now(),
     });
 

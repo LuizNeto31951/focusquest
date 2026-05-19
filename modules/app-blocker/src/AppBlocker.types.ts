@@ -13,4 +13,5 @@ export interface AppBlockerNativeModule {
   listInstalledApps(): Promise<InstalledApp[]>;
   startBlocking(packageNames: string[]): Promise<void>;
   stopBlocking(): Promise<void>;
+  updateFocusNotification(title: string, text: string): Promise<void>;
 }

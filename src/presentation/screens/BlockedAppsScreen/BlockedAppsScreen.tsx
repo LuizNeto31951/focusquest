@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Image, Pressable, ScrollView, Switch, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Check, ShieldOff } from 'lucide-react-native';
+import { Check, ShieldCheck, ShieldOff } from 'lucide-react-native';
 import {
   Button,
   Card,
@@ -39,7 +39,7 @@ export function BlockedAppsScreen() {
   const permissionsOk = vm.hasUsageAccess && vm.hasOverlay;
 
   return (
-    <Screen scroll edges={['top', 'left', 'right', 'bottom']}>
+    <Screen edges={['top', 'left', 'right', 'bottom']}>
       <View style={styles.header}>
         <Typography variant="h2">Bloqueio de apps</Typography>
         <Typography variant="body" color="secondary">
@@ -47,59 +47,68 @@ export function BlockedAppsScreen() {
         </Typography>
       </View>
 
-      <Card style={styles.permissionsCard}>
-        <Typography variant="label" color="secondary">
-          Permissões
-        </Typography>
-        <View style={styles.permissionRow}>
-          <View style={styles.permissionInfo}>
-            <Typography variant="bodyEmphasis">Acesso ao uso</Typography>
-            <Typography variant="caption" color="secondary">
-              {vm.hasUsageAccess
-                ? 'Concedida'
-                : 'Necessária para detectar qual app está aberto'}
-            </Typography>
-          </View>
-          {vm.hasUsageAccess ? (
-            <Icon name={Check} size={18} color={theme.colors.success} />
-          ) : (
-            <Button
-              label="Conceder"
-              size="sm"
-              onPress={async () => {
-                await vm.onRequestUsageAccess();
-              }}
-            />
-          )}
+      {permissionsOk ? (
+        <View style={styles.permissionsGranted}>
+          <Icon name={ShieldCheck} size={20} color={theme.colors.success} />
+          <Typography variant="bodyEmphasis" color="success">
+            Permissões concedidas
+          </Typography>
         </View>
-        <View style={styles.permissionRow}>
-          <View style={styles.permissionInfo}>
-            <Typography variant="bodyEmphasis">Sobreposição</Typography>
-            <Typography variant="caption" color="secondary">
-              {vm.hasOverlay
-                ? 'Concedida'
-                : 'Necessária para mostrar a tela de bloqueio'}
-            </Typography>
+      ) : (
+        <Card style={styles.permissionsCard}>
+          <Typography variant="label" color="secondary">
+            Permissões
+          </Typography>
+          <View style={styles.permissionRow}>
+            <View style={styles.permissionInfo}>
+              <Typography variant="bodyEmphasis">Acesso ao uso</Typography>
+              <Typography variant="caption" color="secondary">
+                {vm.hasUsageAccess
+                  ? 'Concedida'
+                  : 'Necessária para detectar qual app está aberto'}
+              </Typography>
+            </View>
+            {vm.hasUsageAccess ? (
+              <Icon name={Check} size={18} color={theme.colors.success} />
+            ) : (
+              <Button
+                label="Conceder"
+                size="sm"
+                onPress={async () => {
+                  await vm.onRequestUsageAccess();
+                }}
+              />
+            )}
           </View>
-          {vm.hasOverlay ? (
-            <Icon name={Check} size={18} color={theme.colors.success} />
-          ) : (
-            <Button
-              label="Conceder"
-              size="sm"
-              onPress={async () => {
-                await vm.onRequestOverlay();
-              }}
-            />
-          )}
-        </View>
-        <Button
-          label="Verificar novamente"
-          variant="ghost"
-          size="sm"
-          onPress={vm.refreshPermissions}
-        />
-      </Card>
+          <View style={styles.permissionRow}>
+            <View style={styles.permissionInfo}>
+              <Typography variant="bodyEmphasis">Sobreposição</Typography>
+              <Typography variant="caption" color="secondary">
+                {vm.hasOverlay
+                  ? 'Concedida'
+                  : 'Necessária para mostrar a tela de bloqueio'}
+              </Typography>
+            </View>
+            {vm.hasOverlay ? (
+              <Icon name={Check} size={18} color={theme.colors.success} />
+            ) : (
+              <Button
+                label="Conceder"
+                size="sm"
+                onPress={async () => {
+                  await vm.onRequestOverlay();
+                }}
+              />
+            )}
+          </View>
+          <Button
+            label="Verificar novamente"
+            variant="ghost"
+            size="sm"
+            onPress={vm.refreshPermissions}
+          />
+        </Card>
+      )}
 
       {permissionsOk ? (
         <>

@@ -81,6 +81,12 @@ class AppBlockerService : Service() {
         stopBlocking()
         return START_NOT_STICKY
       }
+      ACTION_UPDATE_NOTIFICATION -> {
+        val title = intent.getStringExtra(EXTRA_NOTIF_TITLE)
+        val text = intent.getStringExtra(EXTRA_NOTIF_TEXT)
+        if (title != null && text != null) updateNotification(title, text)
+        return START_STICKY
+      }
       else -> {
         val pkgs = intent?.getStringArrayExtra(EXTRA_PACKAGES) ?: emptyArray()
         blockedPackages = pkgs.toSet()
@@ -118,6 +124,37 @@ class AppBlockerService : Service() {
       stopForeground(true)
     }
     stopSelf()
+  }
+
+  private fun updateNotification(title: String, text: String) {
+    val openAppIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
+      flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
+    val contentPi = openAppIntent?.let {
+      PendingIntent.getActivity(
+        this, 0, it,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+      )
+    }
+    val stopIntent = Intent(this, AppBlockerService::class.java).apply { action = ACTION_STOP }
+    val stopPi = PendingIntent.getService(
+      this, 1, stopIntent,
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+    val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+      .setContentTitle(title)
+      .setContentText(text)
+      .setSmallIcon(android.R.drawable.ic_lock_idle_lock)
+      .setOngoing(true)
+      .setOnlyAlertOnce(true)
+      .setPriority(NotificationCompat.PRIORITY_LOW)
+      .setCategory(NotificationCompat.CATEGORY_SERVICE)
+      .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+      .addAction(0, "Encerrar foco", stopPi)
+      .apply { if (contentPi != null) setContentIntent(contentPi) }
+      .build()
+    val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    nm.notify(NOTIFICATION_ID, notification)
   }
 
   private fun startForegroundIfNeeded() {
@@ -352,7 +389,10 @@ class AppBlockerService : Service() {
     const val CHANNEL_ID = "focus_blocker_channel_v2"
     const val NOTIFICATION_ID = 9101
     const val EXTRA_PACKAGES = "extra_packages"
+    const val EXTRA_NOTIF_TITLE = "extra_notif_title"
+    const val EXTRA_NOTIF_TEXT = "extra_notif_text"
     const val ACTION_STOP = "expo.modules.appblocker.STOP"
+    const val ACTION_UPDATE_NOTIFICATION = "expo.modules.appblocker.UPDATE_NOTIFICATION"
     private const val POLL_INTERVAL_MS = 800L
     private const val LOOKBACK_MS = 5000L
   }

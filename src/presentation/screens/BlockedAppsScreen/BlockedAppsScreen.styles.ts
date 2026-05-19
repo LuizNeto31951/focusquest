@@ -11,6 +11,12 @@ export function createStyles(theme: Theme) {
       gap: theme.spacing.sm,
       marginBottom: theme.spacing.lg,
     },
+    permissionsGranted: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.spacing.sm,
+      marginBottom: theme.spacing.lg,
+    },
     permissionRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -31,7 +37,7 @@ export function createStyles(theme: Theme) {
       marginBottom: theme.spacing.md,
     },
     listContainer: {
-      maxHeight: 360,
+      flex: 1,
       borderRadius: theme.radii.md,
       borderWidth: 1,
       borderColor: theme.colors.border,

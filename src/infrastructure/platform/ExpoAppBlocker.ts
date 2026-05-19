@@ -44,4 +44,9 @@ export class ExpoAppBlocker implements AppBlocker {
     if (!this.isSupported) return;
     await NativeAppBlocker.stopBlocking();
   }
+
+  async updateFocusNotification(title: string, text: string): Promise<void> {
+    if (!this.isSupported) return;
+    await NativeAppBlocker.updateFocusNotification(title, text);
+  }
 }

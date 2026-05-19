@@ -45,13 +45,16 @@ export class SqliteFocusSessionRepository implements FocusSessionRepository {
     await this.client.run(
       `INSERT INTO focus_sessions (
         id, user_id, task_id, started_at, ended_at,
-        planned_duration_minutes, was_interrupted, blocked_app_packages
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        planned_duration_minutes, was_interrupted, blocked_app_packages,
+        pomodoro_cycles, pomodoro_break_minutes
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         task_id = excluded.task_id,
         ended_at = excluded.ended_at,
         was_interrupted = excluded.was_interrupted,
-        blocked_app_packages = excluded.blocked_app_packages`,
+        blocked_app_packages = excluded.blocked_app_packages,
+        pomodoro_cycles = excluded.pomodoro_cycles,
+        pomodoro_break_minutes = excluded.pomodoro_break_minutes`,
       r.id,
       r.user_id,
       r.task_id,
@@ -60,6 +63,8 @@ export class SqliteFocusSessionRepository implements FocusSessionRepository {
       r.planned_duration_minutes,
       r.was_interrupted,
       r.blocked_app_packages,
+      r.pomodoro_cycles,
+      r.pomodoro_break_minutes,
     );
   }
 }
